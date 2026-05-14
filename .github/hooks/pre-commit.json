@@ -1,0 +1,63 @@
+{
+  "version": 1,
+  "tasks": [
+    {
+      "label": "Validate TypeScript (Frontend)",
+      "trigger": "PreToolUse",
+      "condition": "file.match('app/src/**/*.tsx') || file.match('app/src/**/*.ts')",
+      "command": "cd app && npm run build 2>&1 | head -50",
+      "onError": "fail",
+      "description": "Enforces TypeScript strict mode on frontend code. Blocks edits if type errors exist.",
+      "toolRestrictions": ["replace_string_in_file"]
+    },
+    {
+      "label": "Lint React Components",
+      "trigger": "PreToolUse",
+      "condition": "file.match('app/src/components/**/*.tsx')",
+      "command": "cd app && npm run lint -- --format json app/src/components 2>&1 | jq '.[] | select(.severity==2) | .message' | head -10",
+      "onError": "warn",
+      "description": "ESLint checks on React components. Warns on violations but allows edits."
+    },
+    {
+      "label": "Validate Python Async (Backend)",
+      "trigger": "PreToolUse",
+      "condition": "file.match('codeaudit/agents/**/*.py') || file.match('codeaudit/backend/**/*.py')",
+      "command": "python -m py_compile $FILE 2>&1",
+      "onError": "fail",
+      "description": "Basic Python syntax validation. Blocks edits on syntax errors.",
+      "toolRestrictions": ["replace_string_in_file"]
+    },
+    {
+      "label": "Check Pydantic Models",
+      "trigger": "PreToolUse",
+      "condition": "file.path('codeaudit/backend/models.py')",
+      "command": "cd codeaudit && python -c \"from backend.models import *; print('✓ All models valid')\"",
+      "onError": "fail",
+      "description": "Validates all Pydantic model definitions in models.py. Critical file."
+    },
+    {
+      "label": "Verify Path Aliases",
+      "trigger": "PostToolUse",
+      "condition": "file.match('app/src/**/*.tsx') || file.match('app/src/**/*.ts')",
+      "command": "grep -n '\\(from\\|import\\) \\+['\\\"]\\./\\|\\(from\\|import\\) \\+\\.\\.' $FILE || echo 'OK: No relative imports'",
+      "description": "Warns if relative imports found (use @/* instead). Non-blocking.",
+      "onError": "warn"
+    },
+    {
+      "label": "Session Events Valid JSON",
+      "trigger": "PreToolUse",
+      "condition": "file.match('codeaudit/sessions/*.json')",
+      "command": "python -m json.tool $FILE > /dev/null && echo 'Valid JSON'",
+      "onError": "fail",
+      "description": "Validates session event logs are well-formed JSON. Blocks corruption."
+    },
+    {
+      "label": "Config YAML Syntax",
+      "trigger": "PreToolUse",
+      "condition": "file.path('codeaudit/config/config.yaml')",
+      "command": "python -c \"import yaml; yaml.safe_load(open('$FILE')); print('✓ YAML valid')\"",
+      "onError": "fail",
+      "description": "Validates config.yaml syntax. Blocks edits on parse errors."
+    }
+  ]
+}

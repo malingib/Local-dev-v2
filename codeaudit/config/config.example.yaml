@@ -1,0 +1,37 @@
+# CodeAudit Configuration
+# Copy this file to config.yaml and customize
+
+project:
+  name: "My CodeAudit Project"
+  # Either specify a GitHub URL:
+  github_url: ""
+  # Or a local path:
+  local_path: ""
+
+# Which agents to run
+agents:
+  enabled:
+    - auditor          # Code quality, bugs, anti-patterns
+    - ui               # Accessibility, design quality
+    - security         # Security vulnerabilities
+    - performance_static  # Performance issues (static analysis)
+    - mobile_responsiveness  # Mobile/touch issues
+  disabled: []
+
+# Auto-approval settings (auto-apply these without asking)
+approval:
+  auto_approve:
+    missing_alt_text: true
+    missing_meta_viewport: true
+    missing_lazy_loading: true
+    input_type_fix: true
+
+# Hypothesis engine settings
+hypothesis:
+  max_steps: 20           # Maximum experiments per finding
+  confidence_threshold: 0.85  # Threshold to confirm hypothesis
+
+# Server settings
+server:
+  host: "127.0.0.1"
+  port: 8000

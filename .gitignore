@@ -1,0 +1,40 @@
+# Dependencies
+node_modules/
+.venv/
+venv/
+
+# Environment files
+.env
+.env.local
+*.key
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.eggs/
+dist/
+build/
+
+# Generated data
+codeaudit/sessions/
+codeaudit/.llm_cache/
+codeaudit/.file_hashes/
+codeaudit/preferences/
+codeaudit/frontend/dist/
+codeaudit/swarm_data/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log

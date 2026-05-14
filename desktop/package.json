@@ -1,0 +1,44 @@
+{
+  "name": "codeaudit-desktop",
+  "version": "2.0.0",
+  "description": "CodeAudit Desktop - AI-powered code audit with Hermes-inspired features",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "dev": "NODE_ENV=development electron ."
+  },
+  "devDependencies": {
+    "electron": "^35.0.0",
+    "electron-builder": "^26.0.0"
+  },
+  "build": {
+    "appId": "com.codeaudit.desktop",
+    "productName": "CodeAudit",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "main.js",
+      "preload.js",
+      "tray.js",
+      "icons/**/*",
+      "../app/dist/**/*"
+    ],
+    "extraResources": [
+      {
+        "from": "../codeaudit",
+        "to": "backend",
+        "filter": ["**/*", "!__pycache__", "!*.pyc", "!.env"]
+      }
+    ],
+    "linux": {
+      "target": ["AppImage", "deb"],
+      "icon": "icons",
+      "category": "Development"
+    },
+    "win": {
+      "target": ["nsis", "portable"],
+      "icon": "icons/icon.png"
+    }
+  }
+}

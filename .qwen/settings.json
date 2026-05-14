@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python3 *)",
+      "WebFetch(nexos.ai)"
+    ]
+  },
+  "$version": 3
+}
