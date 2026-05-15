@@ -9,13 +9,8 @@ from fastapi import FastAPI, WebSocket, WebSocketDisconnect, HTTPException, Back
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
-try:
-    from swarm import SwarmCoordinator, SwarmConfig
-    _swarm_available = True
-except ImportError:
-    SwarmCoordinator = None  # type: ignore
-    SwarmConfig = None  # type: ignore
-    _swarm_available = False
+from swarm import SwarmCoordinator, SwarmConfig
+_swarm_available = True
 
 # Global coordinator instance
 _coordinator: Optional["SwarmCoordinator"] = None
@@ -50,6 +45,7 @@ class SubmitTaskRequest(BaseModel):
     task_type: str = "general"
     requirements: List[str] = []
     priority: str = "normal"
+    dependencies: Optional[List[str]] = None
 
 
 class ModelSwitchRequest(BaseModel):
@@ -159,7 +155,8 @@ async def submit_task(req: SubmitTaskRequest):
         description=req.description,
         task_type=req.task_type,
         requirements=req.requirements,
-        priority=req.priority
+        priority=req.priority,
+        dependencies=req.dependencies
     )
     return {"task_id": task_id, "status": "submitted"}
 

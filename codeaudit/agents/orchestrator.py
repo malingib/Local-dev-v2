@@ -219,6 +219,21 @@ Return findings as JSON array with: file, line_start, title, severity, type, des
             await self.log(f"Finding {finding_id} not found", "error")
             return session
 
+        # Delegate complex findings to Swarm if enabled
+        if getattr(self.config, "use_swarm", False):
+            await self.log(f"Delegating complex finding to Swarm: {finding.title}")
+            from backend.swarm_api import get_coordinator
+            swarm = get_coordinator()
+            await swarm.start()
+
+            task_id = await swarm.submit_task(
+                description=f"Fix finding: {finding.title}\nDescription: {finding.description}\nLocation: {finding.location}",
+                task_type="fix_finding",
+                priority="high"
+            )
+            await self.log(f"Swarm task submitted: {task_id}")
+            # In a real system, we'd wait for completion. For now, we continue traditional path as fallback or parallel.
+
         # Auto-approve check
         if self._is_auto_approvable(finding):
             await self.log(f"Auto-approving: {finding.title}")

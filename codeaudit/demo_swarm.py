@@ -11,13 +11,7 @@ from pathlib import Path
 # Add project to path
 sys.path.insert(0, str(Path(__file__).parent))
 
-try:
-    from swarm import SwarmCoordinator, SwarmConfig
-except ImportError:
-    print("Error: swarm module not installed.")
-    print("The swarm feature requires the 'swarm' package.")
-    print("This is a planned feature and is not yet available.")
-    sys.exit(1)
+from swarm import SwarmCoordinator, SwarmConfig
 
 
 async def main():
