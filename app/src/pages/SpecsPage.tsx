@@ -7,7 +7,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { Badge } from "@/components/ui/badge"
 import { Spinner } from "@/components/ui/spinner"
 import * as api from "@/lib/api"
-import { FileText, ListChecks, Code, Zap, Mic, Cpu } from "lucide-react"
+import { FileText, ListChecks, Code, Mic, Cpu } from "lucide-react"
 
 export function SpecsPage() {
   const [specs, setSpecs] = useState<Array<Record<string, unknown>>>([])
@@ -111,9 +111,9 @@ export function SpecsPage() {
               </CardHeader>
               <CardContent className="space-y-3">
                 <div className="text-xs text-muted-foreground">
-                  Status: {voiceStatus?.detected_backend as string || "checking..."}
-                  {voiceStatus?.has_vibevoice_key && <Badge className="ml-2 text-[10px]">VibeVoice key set</Badge>}
-                  {voiceStatus?.has_elevenlabs_key && <Badge className="ml-2 text-[10px]">ElevenLabs key set</Badge>}
+                  Status: {(voiceStatus as any)?.detected_backend || "checking..."}
+                  {(voiceStatus as any)?.has_vibevoice_key && <Badge className="ml-2 text-[10px]">VibeVoice key set</Badge>}
+                  {(voiceStatus as any)?.has_elevenlabs_key && <Badge className="ml-2 text-[10px]">ElevenLabs key set</Badge>}
                 </div>
                 <div className="flex gap-2">
                   <Input value={speakText} onChange={(e) => setSpeakText(e.target.value)} placeholder="Text to speak..." />
@@ -171,16 +171,16 @@ export function SpecsPage() {
                 {vscodeStatus?.available ? (
                   <div className="text-xs space-y-2">
                     <Badge variant="default">Available</Badge>
-                    <p className="text-muted-foreground">Run: <code className="bg-muted px-1 rounded">{(vscodeStatus.command as string)}</code></p>
+                    <p className="text-muted-foreground">Run: <code className="bg-muted px-1 rounded">{((vscodeStatus as any).command as string)}</code></p>
                   </div>
                 ) : (
                   <div className="text-xs space-y-2">
                     <Badge variant="secondary">Not installed</Badge>
                     <p className="text-muted-foreground">Install from GitHub:</p>
                     <pre className="bg-muted p-2 rounded text-[10px] whitespace-pre-wrap break-all">
-                      {(vscodeStatus.install_command as string) || "See github.com/gitpod-io/openvscode-server"}
+                      {((vscodeStatus as any)?.install_command as string) || "See github.com/gitpod-io/openvscode-server"}
                     </pre>
-                    <a href={(vscodeStatus.install_url as string) || "https://github.com/gitpod-io/openvscode-server"}
+                    <a href={((vscodeStatus as any)?.install_url as string) || "https://github.com/gitpod-io/openvscode-server"}
                        target="_blank" rel="noopener noreferrer"
                        className="text-primary underline">
                       GitHub Repository

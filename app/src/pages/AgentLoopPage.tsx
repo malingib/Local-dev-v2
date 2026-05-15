@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -143,9 +143,9 @@ export function AgentLoopPage() {
                       <div className="text-xs text-muted-foreground">Avg Duration</div>
                     </div>
                   </div>
-                  {analysis.agents && (
+                  {analysis && (analysis as any).agents && (
                     <div className="flex flex-wrap gap-1 mb-2">
-                      {(Object.entries(analysis.agents as Record<string, number>)).map(([agent, count]) => (
+                      {Object.entries((analysis as any).agents as Record<string, number>).map(([agent, count]) => (
                         <Badge key={agent} variant="outline">{agent}: {String(count)}</Badge>
                       ))}
                     </div>

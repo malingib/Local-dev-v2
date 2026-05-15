@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useRef, useEffect } from "react"
+import { useRef, useEffect } from "react"
 import { useAppStore } from "@/lib/store"
 import { Activity, CheckCircle2, XCircle, Clock, Loader2 } from "lucide-react"
 
@@ -13,7 +13,7 @@ interface Node {
 }
 
 export function AgentExecGraph() {
-  const { agentExecNodes, setAgentExecNodes, currentSession } = useAppStore()
+  const { agentExecNodes, currentSession } = useAppStore()
   const containerRef = useRef<HTMLDivElement>(null)
   const autoScrollRef = useRef(true)
 

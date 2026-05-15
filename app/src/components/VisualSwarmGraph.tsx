@@ -7,18 +7,18 @@ import {
   useNodesState,
   useEdgesState,
   addEdge,
-  Connection,
-  Edge,
-  Node,
+  type Connection,
+  type Edge,
+  type Node,
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 
 interface VisualSwarmGraphProps {
-  agents: any[];
+  agents: { id: string; name: string; [key: string]: any }[];
   activity: any[];
 }
 
-export function VisualSwarmGraph({ agents, activity }: VisualSwarmGraphProps) {
+export function VisualSwarmGraph({ agents }: Omit<VisualSwarmGraphProps, 'activity'>) {
   // Create nodes for agents
   const initialNodes: Node[] = agents.map((agent, i) => ({
     id: agent.id,
@@ -30,7 +30,7 @@ export function VisualSwarmGraph({ agents, activity }: VisualSwarmGraphProps) {
   // Create edges based on activity (simplified: show recent interactions)
   const initialEdges: Edge[] = [];
 
-  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
+  const [nodes, , onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
 
   const onConnect = useCallback(

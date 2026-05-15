@@ -57,7 +57,6 @@ export function BuddyPage() {
       eye_shape: eyeShape,
       accessories: accessory,
     })
-    setShowCreate(false)
   }
 
   async function handleUpdate() {
@@ -152,7 +151,7 @@ export function BuddyPage() {
                   </CardHeader>
                   <CardContent>
                     <div className="flex gap-2 flex-wrap">
-                      {buddy.personality_traits.map((trait) => (
+                      {buddy.personality.traits.map((trait: string) => (
                         <Badge key={trait} variant="secondary">{trait}</Badge>
                       ))}
                     </div>
@@ -186,8 +185,10 @@ export function BuddyPage() {
                 <Select value={species} onValueChange={setSpecies}>
                   <SelectTrigger><SelectValue /></SelectTrigger>
                   <SelectContent>
-                    {options.species.map((s) => (
-                      <SelectItem key={s} value={s}>{s}</SelectItem>
+                    {options.species.map((s: any) => (
+                      <SelectItem key={typeof s === 'string' ? s : s.name} value={typeof s === 'string' ? s : s.name}>
+                        {typeof s === 'string' ? s : s.name}
+                      </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
@@ -250,8 +251,10 @@ export function BuddyPage() {
               <Select value={species} onValueChange={setSpecies}>
                 <SelectTrigger><SelectValue /></SelectTrigger>
                 <SelectContent>
-                  {options.species.map((s) => (
-                    <SelectItem key={s} value={s}>{s}</SelectItem>
+                  {options.species.map((s: any) => (
+                    <SelectItem key={typeof s === 'string' ? s : s.name} value={typeof s === 'string' ? s : s.name}>
+                      {typeof s === 'string' ? s : s.name}
+                    </SelectItem>
                   ))}
                 </SelectContent>
               </Select>

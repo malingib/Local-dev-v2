@@ -276,6 +276,5 @@ async def startup():
 @app.on_event("shutdown")
 async def shutdown():
     """Stop the swarm on API shutdown."""
-    global _coordinator
     if _coordinator:
         await _coordinator.stop()

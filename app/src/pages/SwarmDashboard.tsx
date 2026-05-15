@@ -130,7 +130,7 @@ export function SwarmDashboard() {
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="p-0 flex-1 min-h-0">
-                  <VisualSwarmGraph agents={agents} activity={activity} />
+                  <VisualSwarmGraph agents={agents} />
                 </CardContent>
               </Card>
             </TabsContent>

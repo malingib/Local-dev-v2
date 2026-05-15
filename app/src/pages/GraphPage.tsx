@@ -2,7 +2,6 @@ import { useState, useEffect } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
 import { Badge } from "@/components/ui/badge"
 import { Spinner } from "@/components/ui/spinner"
 import * as api from "@/lib/api"
@@ -268,11 +267,11 @@ export function GraphPage() {
                         <div className="text-[10px] text-muted-foreground">CFG</div>
                       </div>
                     </div>
-                    {extractResult.summary && (
+                    {extractResult && (extractResult as any).summary && (
                       <div className="text-xs text-muted-foreground">
-                        Compression: {(extractResult.summary as any).compression_ratio}% &middot;
-                        Raw: {(extractResult.summary as any).raw_tokens} tokens &middot;
-                        Extracted: {(extractResult.summary as any).total_extracted_tokens} tokens
+                        Compression: {(extractResult as any).summary.compression_ratio}% &middot;
+                        Raw: {(extractResult as any).summary.raw_tokens} tokens &middot;
+                        Extracted: {(extractResult as any).summary.total_extracted_tokens} tokens
                       </div>
                     )}
                   </div>

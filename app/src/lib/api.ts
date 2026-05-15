@@ -18,8 +18,6 @@ import type {
 } from "@/types"
 import { SessionMode } from "@/types"
 
-export type { SoulFileType }
-
 let _apiBase: string | null = null
 
 async function _resolveApiBase(): Promise<string> {
@@ -28,25 +26,29 @@ async function _resolveApiBase(): Promise<string> {
   // 1. Check for build-time env var
   if (import.meta.env.VITE_API_URL) {
     _apiBase = import.meta.env.VITE_API_URL as string
-    return _apiBase
   }
   // 2. Check for Electron runtime
-  try {
-    const ea = (window as any).electronAPI
-    if (ea?.getAppInfo) {
-      const info = await ea.getAppInfo()
-      if (info?.backendBase) {
-        _apiBase = info.backendBase
-        return _apiBase
+  if (_apiBase === null) {
+    try {
+      const ea = (window as any).electronAPI
+      if (ea?.getAppInfo) {
+        const info = await ea.getAppInfo()
+        if (info?.backendBase) {
+          _apiBase = info.backendBase
+        }
       }
+    } catch {
+      // ignore
     }
-  } catch {
-    // ignore
   }
   // 3. Default: same origin
-  _apiBase = ""
+  if (_apiBase === null) {
+    _apiBase = ""
+  }
   return _apiBase
 }
+
+export type SoulFileType = "soul" | "user" | "agents" | "habits" | "mistakes"
 
 let _resolved = false
 async function _ensureResolved() {
