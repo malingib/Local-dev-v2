@@ -1,98 +1,126 @@
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { Separator } from "@/components/ui/separator"
-import type { Finding, Severity, FindingStatus } from "@/types"
-
-const severityColors: Record<Severity, string> = {
-  critical: "bg-red-500 text-white",
-  high: "bg-orange-500 text-white",
-  medium: "bg-yellow-500 text-white",
-  low: "bg-blue-500 text-white",
-  info: "bg-gray-400 text-white",
-}
-
-const statusColors: Record<FindingStatus, string> = {
-  open: "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200",
-  in_progress: "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200",
-  awaiting_approval: "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200",
-  approved: "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200",
-  rejected: "bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200",
-  applied: "bg-emerald-100 text-emerald-800 dark:bg-emerald-900 dark:text-emerald-200",
-  escalated: "bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200",
-}
+import {
+  AlertCircle, AlertTriangle, Info, CheckCircle2,
+  ChevronRight, ArrowUpRight, Zap, Code
+} from "lucide-react"
+import type { Finding } from "@/types"
+import { cn } from "@/lib/utils"
 
 interface FindingCardProps {
   finding: Finding
-  onFix?: (findingId: string) => void
-  onApprove?: (findingId: string) => void
-  onReject?: (findingId: string, reason: string) => void
+  onFix: (id: string) => void
+  onApprove: (id: string) => void
+  onReject: (id: string) => void
 }
 
 export function FindingCard({ finding, onFix, onApprove, onReject }: FindingCardProps) {
+  const severityColor = {
+    critical: "text-red-500 border-red-500/20 bg-red-500/5",
+    high: "text-orange-500 border-orange-500/20 bg-orange-500/5",
+    medium: "text-yellow-500 border-yellow-500/20 bg-yellow-500/5",
+    low: "text-blue-500 border-blue-500/20 bg-blue-500/5",
+    info: "text-slate-500 border-slate-500/20 bg-slate-500/5",
+  }[finding.severity] || "text-slate-500"
+
+  const Icon = {
+    critical: AlertCircle,
+    high: AlertTriangle,
+    medium: AlertTriangle,
+    low: Info,
+    info: Info,
+  }[finding.severity] || Info
+
   return (
-    <Card className="w-full">
-      <CardHeader className="pb-2">
-        <div className="flex items-center justify-between gap-2">
-          <div className="flex items-center gap-2">
-            <Badge className={severityColors[finding.severity]}>
-              {finding.severity}
-            </Badge>
-            <Badge className={statusColors[finding.status]}>
-              {finding.status.replace(/_/g, " ")}
-            </Badge>
-          </div>
-          <Badge variant="outline">{finding.type}</Badge>
-        </div>
-        <CardTitle className="text-lg mt-2">{finding.title}</CardTitle>
-        <CardDescription className="line-clamp-2">{finding.description}</CardDescription>
-      </CardHeader>
-      <CardContent className="pb-2">
-        {(() => {
-          const loc = finding.location
-          const file = loc?.file as string | undefined
-          const line = loc?.line_start as number | undefined
-          return file ? (
-            <div className="text-sm text-muted-foreground font-mono">
-              {file}
-              {line && `:${line}`}
+    <Card className="bg-slate-900/40 border-slate-800 hover:border-slate-700 transition-all group overflow-hidden">
+      <div className={cn("h-1 w-full", {
+        "bg-red-500": finding.severity === "critical",
+        "bg-orange-500": finding.severity === "high",
+        "bg-yellow-500": finding.severity === "medium",
+        "bg-blue-500": finding.severity === "low",
+        "bg-slate-500": finding.severity === "info",
+      })} />
+
+      <CardHeader className="p-4 pb-2">
+        <div className="flex items-start justify-between">
+          <div className="flex items-center gap-3">
+            <div className={cn("p-2 rounded-lg border", severityColor)}>
+              <Icon className="h-5 w-5" />
             </div>
-          ) : null
-        })()}
-        {finding.code_snippet && (
-          <>
-            <Separator className="my-2" />
-            <pre className="text-xs bg-muted p-3 rounded-md overflow-auto max-h-40 font-mono">
-              {finding.code_snippet}
-            </pre>
-          </>
-        )}
-        {finding.suggested_fix && (
-          <div className="mt-2 text-sm">
-            <span className="font-medium">Suggested fix: </span>
-            <span className="text-muted-foreground">{finding.suggested_fix}</span>
+            <div>
+              <div className="flex items-center gap-2 mb-1">
+                <Badge variant="outline" className={cn("text-[10px] uppercase tracking-widest px-1.5 font-bold", severityColor)}>
+                  {finding.severity}
+                </Badge>
+                <span className="text-[10px] text-slate-500 uppercase font-bold tracking-widest">{finding.type}</span>
+              </div>
+              <CardTitle className="text-base font-bold text-slate-100">{finding.title}</CardTitle>
+            </div>
           </div>
-        )}
+          <Badge variant={finding.status === "open" ? "secondary" : "default"} className="text-[10px] font-mono">
+            {finding.status.toUpperCase()}
+          </Badge>
+        </div>
+      </CardHeader>
+
+      <CardContent className="p-4 pt-0">
+        <p className="text-sm text-slate-400 mt-2 line-clamp-2">{finding.description}</p>
+
+        <div className="mt-4 flex items-center gap-4 text-[11px] font-mono text-slate-500">
+          <div className="flex items-center gap-1.5">
+            <Code className="h-3 w-3" />
+            <span className="truncate max-w-[200px]">
+              {(finding.location?.file as string) || "Unknown Location"}
+            </span>
+          </div>
+          {finding.location?.line_start && (
+            <div className="flex items-center gap-1.5">
+              <span className="h-1 w-1 rounded-full bg-slate-700" />
+              <span>Line {finding.location.line_start as number}</span>
+            </div>
+          )}
+        </div>
+
+        <div className="mt-6 flex items-center justify-between pt-4 border-t border-slate-800/50">
+          <div className="flex items-center gap-2">
+            {finding.status === "open" && (
+              <Button
+                size="sm"
+                className="bg-primary hover:bg-primary/90 text-primary-foreground h-8 text-xs font-bold"
+                onClick={() => onFix(finding.id)}
+              >
+                <Zap className="h-3 w-3 mr-2 fill-current" />
+                AUTOGEN FIX
+              </Button>
+            )}
+            {finding.status === "awaiting_approval" && (
+              <>
+                <Button
+                  size="sm"
+                  className="bg-green-600 hover:bg-green-500 text-white h-8 text-xs font-bold"
+                  onClick={() => onApprove(finding.id)}
+                >
+                  <CheckCircle2 className="h-3 w-3 mr-2" />
+                  APPROVE
+                </Button>
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  className="text-red-400 hover:text-red-300 hover:bg-red-400/10 h-8 text-xs font-bold"
+                  onClick={() => onReject(finding.id)}
+                >
+                  REJECT
+                </Button>
+              </>
+            )}
+          </div>
+
+          <Button variant="ghost" size="sm" className="h-8 text-xs text-slate-500 hover:text-slate-300 group-hover:translate-x-1 transition-transform">
+            Details <ArrowUpRight className="h-3 w-3 ml-1" />
+          </Button>
+        </div>
       </CardContent>
-      {["open", "awaiting_approval"].includes(finding.status) && (
-        <CardFooter className="flex gap-2 pt-2">
-          {finding.status === "open" && onFix && (
-            <Button size="sm" onClick={() => onFix(finding.id)}>
-              Fix
-            </Button>
-          )}
-          {onApprove && (
-            <Button size="sm" variant="default" onClick={() => onApprove(finding.id)}>
-              Approve
-            </Button>
-          )}
-          {onReject && (
-            <Button size="sm" variant="outline" onClick={() => onReject(finding.id, "")}>
-              Reject
-            </Button>
-          )}
-        </CardFooter>
-      )}
     </Card>
   )
 }

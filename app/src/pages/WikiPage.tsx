@@ -76,61 +76,75 @@ export function WikiPage() {
   const pageList = searchQuery.trim() ? wikiSearchResults : wikiPages
 
   return (
-    <div className="min-h-screen bg-background">
-      <div className="container mx-auto py-8 px-4">
+    <div className="min-h-screen bg-slate-950 text-slate-50 swarm-grid">
+      <div className="container mx-auto py-8 px-4 relative z-10">
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h1 className="text-3xl font-bold">Wiki</h1>
-            <p className="text-muted-foreground mt-1">Knowledge base documentation</p>
+            <h1 className="text-4xl font-black tracking-tight text-white uppercase italic">Knowledge Base</h1>
+            <p className="text-slate-400 mt-1 font-mono text-sm uppercase tracking-widest flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse" />
+              Collective Intelligence Archive & Wiki
+            </p>
           </div>
-          <Button onClick={handleNewPage}>
+          <Button
+            onClick={handleNewPage}
+            className="bg-amber-600 hover:bg-amber-500 text-white font-bold uppercase tracking-widest text-xs px-6"
+          >
             <Plus className="h-4 w-4 mr-2" />
-            New Page
+            NEW RECORD
           </Button>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Sidebar - Page List */}
           <div className="lg:col-span-1">
-            <Card>
-              <CardHeader className="pb-3">
-                <div className="relative">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Card className="glass border-slate-800 bg-slate-900/40">
+              <CardHeader className="pb-3 px-4">
+                <div className="relative group">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-500 group-focus-within:text-amber-400 transition-colors" />
                   <Input
-                    placeholder="Search wiki..."
+                    placeholder="Search archives..."
                     value={searchQuery}
                     onChange={(e) => handleSearch(e.target.value)}
-                    className="pl-9"
+                    className="pl-9 bg-slate-950 border-slate-800 text-slate-300 font-mono text-xs focus:ring-amber-500/50"
                   />
                 </div>
               </CardHeader>
               <CardContent className="p-0">
                 <ScrollArea className="h-[calc(100vh-280px)]">
                   {wikiLoading && pageList.length === 0 ? (
-                    <div className="flex justify-center py-8"><Spinner /></div>
+                    <div className="flex justify-center py-16"><Spinner /></div>
                   ) : pageList.length === 0 ? (
-                    <p className="text-sm text-muted-foreground text-center py-8">
-                      {searchQuery ? "No matching pages." : "No pages yet. Create one!"}
-                    </p>
+                    <div className="text-center py-20 px-4">
+                      <p className="text-[10px] text-slate-600 font-mono uppercase italic tracking-widest">
+                        {searchQuery ? "Null results for query" : "No records found in current matrix"}
+                      </p>
+                    </div>
                   ) : (
                     <div className="space-y-0">
                       {pageList.map((page) => (
                         <button
                           key={page.id}
-                          className={`w-full text-left px-4 py-3 border-b last:border-b-0 hover:bg-muted/50 transition-colors ${
-                            currentWikiPage?.id === page.id ? "bg-muted" : ""
+                          className={`w-full text-left px-4 py-4 border-b border-slate-800/50 hover:bg-slate-900/60 transition-all group ${
+                            currentWikiPage?.id === page.id ? "bg-amber-500/5 border-l-2 border-l-amber-500" : ""
                           }`}
                           onClick={() => handleSelectPage(page)}
                         >
-                          <div className="flex items-center gap-2">
-                            <FileText className="h-4 w-4 shrink-0 text-muted-foreground" />
-                            <span className="text-sm font-medium truncate">{page.title}</span>
+                          <div className="flex items-center gap-3">
+                            <div className={`p-1.5 rounded bg-slate-950 border border-slate-800 group-hover:border-amber-500/50 transition-colors ${currentWikiPage?.id === page.id ? "border-amber-500/50" : ""}`}>
+                              <FileText className={`h-3 w-3 ${currentWikiPage?.id === page.id ? "text-amber-400" : "text-slate-500"}`} />
+                            </div>
+                            <span className={`text-xs font-bold uppercase tracking-wide truncate ${currentWikiPage?.id === page.id ? "text-amber-400" : "text-slate-300 group-hover:text-white"}`}>
+                              {page.title}
+                            </span>
                           </div>
-                          <div className="flex items-center gap-2 mt-1">
+                          <div className="flex items-center gap-2 mt-2 ml-7">
                             {page.tags?.slice(0, 2).map((tag) => (
-                              <Badge key={tag} variant="outline" className="text-xs">{tag}</Badge>
+                              <Badge key={tag} className="bg-slate-950 text-[8px] font-mono border-slate-800 text-slate-500 px-1.5 py-0">
+                                {tag.toUpperCase()}
+                              </Badge>
                             ))}
-                            <span className="text-xs text-muted-foreground ml-auto">
+                            <span className="text-[9px] font-mono text-slate-600 ml-auto">
                               {new Date(page.updated_at).toLocaleDateString()}
                             </span>
                           </div>
@@ -146,46 +160,74 @@ export function WikiPage() {
           {/* Main Content - Editor/Preview */}
           <div className="lg:col-span-2">
             {currentWikiPage ? (
-              <Card>
-                <CardHeader className="pb-3">
-                  <div className="flex items-center justify-between">
-                    <CardTitle className="text-xl">{currentWikiPage.title}</CardTitle>
+              <Card className="glass border-slate-800 bg-slate-900/40 overflow-hidden">
+                <div className="h-1 w-full bg-amber-500/50" />
+                <CardHeader className="pb-4 px-6">
+                  <div className="flex items-start justify-between">
+                    <div>
+                      <CardTitle className="text-2xl font-black text-white uppercase italic tracking-tight">{currentWikiPage.title}</CardTitle>
+                      {currentWikiPage.tags && currentWikiPage.tags.length > 0 && (
+                        <div className="flex gap-1.5 mt-2">
+                          {currentWikiPage.tags.map((tag) => (
+                            <Badge key={tag} className="bg-amber-500/10 text-amber-400 border-amber-500/20 text-[9px] font-mono uppercase">
+                              {tag}
+                            </Badge>
+                          ))}
+                        </div>
+                      )}
+                    </div>
                     <div className="flex gap-2">
-                      <Button variant="outline" size="sm" onClick={() => handleEditPage(currentWikiPage)}>
-                        <Edit3 className="h-4 w-4 mr-1" />
-                        Edit
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => handleEditPage(currentWikiPage)}
+                        className="text-slate-400 hover:text-amber-400 hover:bg-amber-500/10 border border-slate-800 hover:border-amber-500/30"
+                      >
+                        <Edit3 className="h-3 w-3 mr-2" />
+                        MODIFY
                       </Button>
-                      <Button variant="destructive" size="sm" onClick={() => handleDelete(currentWikiPage.id)}>
-                        <Trash2 className="h-4 w-4" />
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => handleDelete(currentWikiPage.id)}
+                        className="text-slate-600 hover:text-red-400 hover:bg-red-500/10 border border-slate-800 hover:border-red-500/30"
+                      >
+                        <Trash2 className="h-3 w-3" />
                       </Button>
                     </div>
                   </div>
-                  {currentWikiPage.tags && currentWikiPage.tags.length > 0 && (
-                    <div className="flex gap-1 mt-2">
-                      {currentWikiPage.tags.map((tag) => (
-                        <Badge key={tag} variant="secondary" className="text-xs">{tag}</Badge>
-                      ))}
-                    </div>
-                  )}
                 </CardHeader>
-                <CardContent>
-                  <ScrollArea className="h-[calc(100vh-380px)]">
-                    <div className="prose prose-sm max-w-none text-sm whitespace-pre-wrap">
-                      {currentWikiPage.content || "(no content)"}
-                    </div>
-                  </ScrollArea>
-                  <div className="mt-4 text-xs text-muted-foreground">
-                    Last modified: {new Date(currentWikiPage.updated_at).toLocaleString()}
+                <CardContent className="px-6">
+                  <div className="bg-slate-950/60 rounded-xl border border-slate-800 p-6 min-h-[400px]">
+                    <ScrollArea className="h-[calc(100vh-420px)]">
+                      <div className="prose prose-invert prose-sm max-w-none text-slate-300 font-sans leading-relaxed">
+                        {currentWikiPage.content || <span className="italic text-slate-600 font-mono uppercase tracking-widest text-[10px]">No encoded data in record</span>}
+                      </div>
+                    </ScrollArea>
+                  </div>
+                  <div className="mt-4 flex items-center justify-between text-[9px] font-mono text-slate-600 uppercase tracking-widest">
+                    <span>RECORD_ID: {currentWikiPage.id.slice(0, 8)}...</span>
+                    <span>LAST_MODIFIED: {new Date(currentWikiPage.updated_at).toLocaleString()}</span>
                   </div>
                 </CardContent>
               </Card>
             ) : (
-              <Card>
-                <CardContent className="py-16 text-center text-muted-foreground">
-                  <FileText className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                  <p>Select a page from the sidebar or create a new one.</p>
-                </CardContent>
-              </Card>
+              <div className="h-full min-h-[500px] flex flex-col items-center justify-center bg-slate-950/40 rounded-2xl border border-dashed border-slate-800 p-12 text-center group">
+                <div className="p-6 rounded-full bg-slate-900 border border-slate-800 mb-6 group-hover:border-amber-500/30 transition-all duration-500">
+                  <FileText className="h-12 w-12 text-slate-800 group-hover:text-amber-500/20 transition-all duration-500" />
+                </div>
+                <h3 className="text-slate-500 font-black uppercase tracking-widest text-lg mb-2">Archive Idle</h3>
+                <p className="text-slate-600 font-mono text-[10px] uppercase tracking-tighter max-w-xs mx-auto">
+                  Select a knowledge record from the archive or initialize a new neural node to begin documentation.
+                </p>
+                <Button
+                  onClick={handleNewPage}
+                  variant="outline"
+                  className="mt-8 border-slate-800 text-slate-500 hover:border-amber-500/50 hover:text-amber-400 font-bold uppercase text-[10px] tracking-widest"
+                >
+                  INITIALIZE NEW RECORD
+                </Button>
+              </div>
             )}
           </div>
         </div>

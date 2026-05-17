@@ -9,6 +9,11 @@ import { Spinner } from "@/components/ui/spinner"
 import { useAppStore } from "@/lib/store"
 import { SessionMode } from "@/types"
 import { AgentExecGraph } from "@/components/AgentExecGraph"
+import {
+  Rocket, Plus, History, Activity, ShieldCheck,
+  Search, Github, FolderOpen, ChevronRight, Sparkles, Zap
+} from "lucide-react"
+import { cn } from "@/lib/utils"
 
 export function Dashboard() {
   const navigate = useNavigate()
@@ -40,172 +45,255 @@ export function Dashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      <div className="container mx-auto py-8 px-4">
-        {/* Header */}
-        <div className="flex items-center justify-between mb-8">
-          <div>
-            <h1 className="text-3xl font-bold">CodeAudit</h1>
-            <p className="text-muted-foreground mt-1">AI-powered code audit system</p>
-          </div>
+    <div className="min-h-screen bg-[#020617] text-slate-200 swarm-grid p-6">
+      <div className="max-w-7xl mx-auto space-y-8">
+
+        {/* Top Navigation / Stats */}
+        <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
-            {health && (
-              <Badge variant={health.status === "ok" ? "default" : "destructive"}>
-                {health.status === "ok" ? "API Connected" : "API Disconnected"}
-              </Badge>
-            )}
-            <span className="text-xs text-muted-foreground">v{health?.version}</span>
+            <div className="h-12 w-12 bg-primary rounded-2xl flex items-center justify-center shadow-lg shadow-primary/20">
+              <Rocket className="h-6 w-6 text-primary-foreground" />
+            </div>
+            <div>
+              <h1 className="text-2xl font-bold tracking-tight">Control Center</h1>
+              <p className="text-slate-400 text-sm">Orchestrate your autonomous audit swarms</p>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-3">
+            <div className="text-right mr-4">
+              <div className="text-[10px] uppercase font-bold text-slate-500 tracking-widest">System Health</div>
+              <div className="flex items-center gap-2 mt-0.5">
+                <span className="flex h-2 w-2 rounded-full bg-green-500" />
+                <span className="text-sm font-medium">{health?.status === "ok" ? "Nominal" : "Degraded"}</span>
+              </div>
+            </div>
+            <div className="h-10 w-px bg-slate-800" />
+            <Button variant="outline" className="border-slate-800 bg-slate-900/50 hover:bg-slate-800 text-slate-300">
+              <Activity className="h-4 w-4 mr-2" />
+              Metrics
+            </Button>
           </div>
         </div>
 
-        {/* New Session */}
-        <Card className="mb-8">
-          <CardHeader>
-            <CardTitle>New Audit Session</CardTitle>
-            <CardDescription>Point CodeAudit at a codebase to get started</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="projectPath">Local Project Path</Label>
-                <div className="flex gap-2">
-                  <Input
-                    id="projectPath"
-                    placeholder="/path/to/your/project"
-                    value={projectPath}
-                    onChange={(e) => setProjectPath(e.target.value)}
-                    className="flex-1"
-                  />
-                  {supportsDirectoryPicker ? (
-                    <>
-                      <Button
-                        type="button"
-                        variant="outline"
-                        onClick={() => fileInputRef.current?.click()}
-                      >
-                        Browse
-                      </Button>
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+
+          {/* Main Action Area */}
+          <div className="lg:col-span-8 space-y-8">
+
+            {/* New Session Card */}
+            <Card className="bg-slate-900/40 border-slate-800 backdrop-blur-md overflow-hidden relative group">
+              <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:opacity-20 transition-opacity">
+                <Plus className="h-24 w-24" />
+              </div>
+              <CardHeader className="pb-4">
+                <div className="flex items-center gap-2 mb-1">
+                  <Badge className="bg-primary/10 text-primary border-primary/20 hover:bg-primary/20">Mission Start</Badge>
+                </div>
+                <CardTitle className="text-xl text-slate-100">Initialize New Audit</CardTitle>
+                <CardDescription className="text-slate-200/60">Deploy agents to analyze and improve your codebase</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="space-y-2">
+                    <Label htmlFor="projectPath" className="text-xs uppercase tracking-wider text-slate-500 font-bold">Local Repository</Label>
+                    <div className="flex gap-2">
+                      <div className="relative flex-1">
+                        <FolderOpen className="absolute left-3 top-2.5 h-4 w-4 text-slate-500" />
+                        <Input
+                          id="projectPath"
+                          placeholder="/path/to/project"
+                          value={projectPath}
+                          onChange={(e) => setProjectPath(e.target.value)}
+                          className="bg-slate-950/50 border-slate-800 pl-10 focus:ring-primary/20"
+                        />
+                      </div>
+                      {supportsDirectoryPicker && (
+                        <Button
+                          variant="secondary"
+                          size="sm"
+                          className="bg-slate-800 hover:bg-slate-700 text-slate-200"
+                          onClick={() => fileInputRef.current?.click()}
+                        >
+                          Browse
+                        </Button>
+                      )}
                       <input
                         ref={fileInputRef}
                         type="file"
                         onChange={(e) => {
                           const files = e.target.files
                           if (files && files.length > 0) {
-                            const file = files[0]
-                            const path = (file as any).path || file.name
+                            const path = (files[0] as any).path || files[0].name
                             setProjectPath(path)
                           }
                         }}
                         {...{ webkitdirectory: "", directory: "" }}
                         style={{ display: "none" }}
                       />
-                    </>
-                  ) : (
-                    <p className="text-xs text-muted-foreground self-end pb-1">
-                      Type the path manually (directory picker not supported in this browser)
-                    </p>
-                  )}
-                </div>
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="githubUrl">GitHub URL (optional)</Label>
-                <Input
-                  id="githubUrl"
-                  placeholder="https://github.com/user/repo"
-                  value={githubUrl}
-                  onChange={(e) => setGithubUrl(e.target.value)}
-                />
-              </div>
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="goal">Goal (optional, for targeted audits)</Label>
-              <Input
-                id="goal"
-                placeholder='e.g., "fix the React console errors" or "audit the auth flow"'
-                value={goal}
-                onChange={(e) => setGoal(e.target.value)}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label>Mode</Label>
-              <div className="flex gap-2">
-                {Object.values(SessionMode).map((m) => (
-                  <Button
-                    key={m}
-                    variant={mode === m ? "default" : "outline"}
-                    size="sm"
-                    onClick={() => setMode(m)}
-                  >
-                    {m.replace(/_/g, " ")}
-                  </Button>
-                ))}
-              </div>
-            </div>
-            <Button
-              onClick={handleCreateSession}
-              disabled={loading || (!projectPath && !githubUrl)}
-            >
-              {loading ? <Spinner className="mr-2" /> : null}
-              Create Session
-            </Button>
-          </CardContent>
-        </Card>
-
-        {/* Live Agent Execution */}
-        <Card className="mb-8">
-          <CardHeader>
-            <CardTitle className="text-sm">Agent Execution</CardTitle>
-            <CardDescription>Live view of agent activity — start an audit to see it work</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <AgentExecGraph />
-          </CardContent>
-        </Card>
-
-        {/* Sessions List */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Sessions</CardTitle>
-            <CardDescription>Previous audit sessions</CardDescription>
-          </CardHeader>
-          <CardContent>
-            {loading && sessions.length === 0 ? (
-              <div className="flex justify-center py-8">
-                <Spinner />
-              </div>
-            ) : sessions.length === 0 ? (
-              <p className="text-muted-foreground text-center py-8">
-                No sessions yet. Create one above to get started.
-              </p>
-            ) : (
-              <div className="space-y-3">
-                {sessions.map((session) => (
-                  <div
-                    key={session.id}
-                    className="flex items-center justify-between p-4 border rounded-lg cursor-pointer hover:bg-muted/50 transition-colors"
-                    onClick={() => navigate(`/session/${session.id}`)}
-                  >
-                    <div className="flex-1 min-w-0">
-                      <div className="font-medium">{session.project_name || "Unnamed Project"}</div>
-                      <div className="text-sm text-muted-foreground truncate">
-                        {session.project_path}
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-4">
-                      <div className="text-right text-sm">
-                        <div>{session.findings_total} findings</div>
-                        {session.findings_critical > 0 && (
-                          <div className="text-red-500">{session.findings_critical} critical</div>
-                        )}
-                      </div>
-                      <Badge variant="outline">{session.state}</Badge>
                     </div>
                   </div>
-                ))}
+                  <div className="space-y-2">
+                    <Label htmlFor="githubUrl" className="text-xs uppercase tracking-wider text-slate-500 font-bold">GitHub Source</Label>
+                    <div className="relative">
+                      <Github className="absolute left-3 top-2.5 h-4 w-4 text-slate-500" />
+                      <Input
+                        id="githubUrl"
+                        placeholder="https://github.com/..."
+                        value={githubUrl}
+                        onChange={(e) => setGithubUrl(e.target.value)}
+                        className="bg-slate-950/50 border-slate-800 pl-10 focus:ring-primary/20"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="goal" className="text-xs uppercase tracking-wider text-slate-500 font-bold">Primary Directive (Optional)</Label>
+                  <div className="relative">
+                    <Sparkles className="absolute left-3 top-2.5 h-4 w-4 text-primary/60" />
+                    <Input
+                      id="goal"
+                      placeholder='e.g., "Deep audit of the auth flow" or "Performance optimization pass"'
+                      value={goal}
+                      onChange={(e) => setGoal(e.target.value)}
+                      className="bg-slate-950/50 border-slate-800 pl-10 focus:ring-primary/20"
+                    />
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-between pt-2">
+                  <div className="flex bg-slate-950/50 p-1 rounded-xl border border-slate-800">
+                    {Object.values(SessionMode).map((m) => (
+                      <button
+                        key={m}
+                        onClick={() => setMode(m)}
+                        className={cn(
+                          "px-4 py-1.5 rounded-lg text-xs font-bold transition-all uppercase tracking-wider",
+                          mode === m
+                            ? "bg-primary text-primary-foreground shadow-lg shadow-primary/20"
+                            : "text-slate-500 hover:text-slate-300"
+                        )}
+                      >
+                        {m.replace(/_/g, " ")}
+                      </button>
+                    ))}
+                  </div>
+
+                  <Button
+                    size="lg"
+                    onClick={handleCreateSession}
+                    disabled={loading || (!projectPath && !githubUrl)}
+                    className="bg-primary hover:bg-primary/90 text-primary-foreground px-8 rounded-xl font-bold shadow-xl shadow-primary/20"
+                  >
+                    {loading ? <Spinner className="mr-2 h-4 w-4" /> : <Rocket className="mr-2 h-4 w-4" />}
+                    DEPLOY AGENTS
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Execution Graph */}
+            <Card className="bg-slate-900/40 border-slate-800 backdrop-blur-md">
+              <CardHeader className="flex flex-row items-center justify-between pb-2">
+                <div>
+                  <CardTitle className="text-sm font-bold uppercase tracking-widest text-slate-400">Agent Live Stream</CardTitle>
+                  <CardDescription>Real-time visual trace of agent thought processes</CardDescription>
+                </div>
+                <Badge variant="outline" className="bg-blue-500/5 text-blue-400 border-blue-500/20">
+                  {sessions.length > 0 ? "STREAM ACTIVE" : "IDLE"}
+                </Badge>
+              </CardHeader>
+              <CardContent className="h-64 flex items-center justify-center border-t border-slate-800/50 bg-slate-950/20">
+                <AgentExecGraph />
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Sidebar Area */}
+          <div className="lg:col-span-4 space-y-8">
+
+            {/* Recent Sessions */}
+            <div className="space-y-4">
+              <div className="flex items-center justify-between px-2">
+                <h3 className="text-xs font-bold uppercase tracking-widest text-slate-500 flex items-center gap-2">
+                  <History className="h-3 w-3" />
+                  Mission History
+                </h3>
+                <Button variant="link" className="text-[10px] h-auto p-0 text-primary">View All</Button>
               </div>
-            )}
-          </CardContent>
-        </Card>
+
+              <div className="space-y-3">
+                {loading && sessions.length === 0 ? (
+                  Array.from({ length: 3 }).map((_, i) => (
+                    <div key={i} className="h-20 rounded-xl bg-slate-900/40 border border-slate-800 animate-pulse" />
+                  ))
+                ) : sessions.length === 0 ? (
+                  <div className="p-8 text-center border border-dashed border-slate-800 rounded-2xl">
+                    <p className="text-sm text-slate-500">No active missions</p>
+                  </div>
+                ) : (
+                  sessions.slice(0, 5).map((session) => (
+                    <div
+                      key={session.id}
+                      onClick={() => navigate(`/session/${session.id}`)}
+                      className="group p-4 rounded-xl bg-slate-900/40 border border-slate-800 hover:border-primary/50 hover:bg-slate-800/40 transition-all cursor-pointer relative overflow-hidden"
+                    >
+                      <div className="absolute top-0 right-0 p-3 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <ChevronRight className="h-4 w-4 text-primary" />
+                      </div>
+                      <div className="flex items-start gap-3">
+                        <div className="h-10 w-10 shrink-0 rounded-lg bg-slate-950 flex items-center justify-center border border-slate-800">
+                          {session.github_url ? <Github className="h-5 w-5 text-slate-400" /> : <FolderOpen className="h-5 w-5 text-slate-400" />}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="font-bold text-sm truncate group-hover:text-primary transition-colors">{session.project_name || "Unnamed Mission"}</div>
+                          <div className="flex items-center gap-2 mt-1">
+                            <Badge variant="outline" className="text-[9px] py-0 px-1.5 border-slate-700 text-slate-500 uppercase">
+                              {session.state}
+                            </Badge>
+                            <span className="text-[10px] text-slate-600 font-mono">{session.findings_total} FINDINGS</span>
+                          </div>
+                        </div>
+                      </div>
+                      {session.findings_critical > 0 && (
+                        <div className="mt-3 h-1 w-full bg-slate-800 rounded-full overflow-hidden">
+                          <div className="h-full bg-red-500 w-1/3 shadow-[0_0_8px_rgba(239,68,68,0.5)]" />
+                        </div>
+                      )}
+                    </div>
+                  ))
+                )}
+              </div>
+            </div>
+
+            {/* Quick Insights */}
+            <Card className="bg-slate-900/40 border-slate-800">
+               <CardHeader className="pb-2">
+                <CardTitle className="text-xs font-bold uppercase tracking-widest text-slate-400">Overview</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                 <div className="flex items-center justify-between p-3 rounded-lg bg-slate-950/50 border border-slate-800">
+                    <div className="flex items-center gap-3">
+                      <ShieldCheck className="h-4 w-4 text-green-500" />
+                      <span className="text-xs font-medium">Security Index</span>
+                    </div>
+                    <span className="font-mono text-xs font-bold text-green-500">88%</span>
+                 </div>
+                 <div className="flex items-center justify-between p-3 rounded-lg bg-slate-950/50 border border-slate-800">
+                    <div className="flex items-center gap-3">
+                      <Zap className="h-4 w-4 text-yellow-500" />
+                      <span className="text-xs font-medium">Auto-Fix Velocity</span>
+                    </div>
+                    <span className="font-mono text-xs font-bold text-yellow-500">12/hr</span>
+                 </div>
+              </CardContent>
+            </Card>
+
+          </div>
+
+        </div>
+
       </div>
     </div>
   )
