@@ -18,8 +18,6 @@ import type {
 } from "@/types"
 import { SessionMode } from "@/types"
 
-export type { SoulFileType }
-
 let _apiBase: string | null = null
 
 async function _resolveApiBase(): Promise<string> {
@@ -28,25 +26,29 @@ async function _resolveApiBase(): Promise<string> {
   // 1. Check for build-time env var
   if (import.meta.env.VITE_API_URL) {
     _apiBase = import.meta.env.VITE_API_URL as string
-    return _apiBase
   }
   // 2. Check for Electron runtime
-  try {
-    const ea = (window as any).electronAPI
-    if (ea?.getAppInfo) {
-      const info = await ea.getAppInfo()
-      if (info?.backendBase) {
-        _apiBase = info.backendBase
-        return _apiBase
+  if (_apiBase === null) {
+    try {
+      const ea = (window as any).electronAPI
+      if (ea?.getAppInfo) {
+        const info = await ea.getAppInfo()
+        if (info?.backendBase) {
+          _apiBase = info.backendBase
+        }
       }
+    } catch {
+      // ignore
     }
-  } catch {
-    // ignore
   }
   // 3. Default: same origin
-  _apiBase = ""
+  if (_apiBase === null) {
+    _apiBase = ""
+  }
   return _apiBase
 }
+
+export type SoulFileType = "soul" | "user" | "agents" | "habits" | "mistakes"
 
 let _resolved = false
 async function _ensureResolved() {
@@ -64,6 +66,7 @@ function getApiBase(): string {
 }
 
 async function request<T>(path: string, options?: RequestInit): Promise<T> {
+  const API_BASE = getApiBase()
   const res = await fetch(`${API_BASE}${path}`, {
     headers: { "Content-Type": "application/json" },
     ...options,
@@ -722,4 +725,41 @@ export async function markNotificationRead(id: string): Promise<{ status: string
 
 export async function clearNotifications(): Promise<{ status: string }> {
   return request("/api/notifications/clear", { method: "POST" })
+}
+
+// ─── Swarm ────────────────────────────────────────────────────────────────────
+
+export const SWARM_API_BASE = "/api/swarm"
+
+export async function getSwarmStatus(): Promise<any> {
+  return request(`${SWARM_API_BASE}/api/swarm/status`)
+}
+
+export async function listSwarmAgents(): Promise<any> {
+  return request(`${SWARM_API_BASE}/api/swarm/agents`)
+}
+
+export async function getSwarmActivity(limit = 50): Promise<any> {
+  return request(`${SWARM_API_BASE}/api/swarm/activity?limit=${limit}`)
+}
+
+export async function submitSwarmTask(data: { description: string; task_type?: string; requirements?: string[]; priority?: string }): Promise<any> {
+  return request(`${SWARM_API_BASE}/api/swarm/tasks`, {
+    method: "POST",
+    body: JSON.stringify(data),
+  })
+}
+
+export async function switchSwarmModel(data: { agent_id?: string; model: string }): Promise<any> {
+  return request(`${SWARM_API_BASE}/api/swarm/models/switch`, {
+    method: "POST",
+    body: JSON.stringify(data),
+  })
+}
+
+export async function callRoundTable(data: { topic: string; question: string; agents?: string[] }): Promise<any> {
+  return request(`${SWARM_API_BASE}/api/swarm/round-table`, {
+    method: "POST",
+    body: JSON.stringify(data),
+  })
 }

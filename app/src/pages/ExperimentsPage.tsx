@@ -9,7 +9,7 @@ import { Spinner } from "@/components/ui/spinner"
 import { useAppStore } from "@/lib/store"
 import {
   FlaskConical, Play, Plus, Trash2, Download, RotateCcw,
-  Lightbulb, FileCode, Clock, Target, BarChart3,
+  Lightbulb, FileCode, Target, BarChart3,
 } from "lucide-react"
 
 export function ExperimentsPage() {
@@ -19,7 +19,7 @@ export function ExperimentsPage() {
     fetchExperimentSessions, createExperimentSession,
     selectExperimentSession, deleteExperimentSession,
     establishBaseline, runExperiment, proposeExperiment,
-    fetchExperimentResults, selfModifyAgent,
+    selfModifyAgent,
     setExperimentProposal,
   } = useAppStore()
 
@@ -34,7 +34,7 @@ export function ExperimentsPage() {
 
   useEffect(() => {
     fetchExperimentSessions()
-  }, [])
+  }, [fetchExperimentSessions])
 
   async function handleCreate() {
     if (!projectPath) return

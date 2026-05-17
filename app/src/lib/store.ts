@@ -58,6 +58,10 @@ interface AppState {
   notifLoading: boolean
 
   // Actions
+  buddyMood: string
+  buddyMessage: string
+  sessionActivity: string
+  agentExecNodes: any[]
   fetchHealth: () => Promise<void>
   fetchConfig: () => Promise<void>
   fetchSessions: () => Promise<void>
@@ -100,12 +104,14 @@ interface AppState {
   // Buddy actions
   fetchBuddy: () => Promise<void>
   fetchBuddyOptions: () => Promise<void>
-  createBuddy: (data: { name: string; species: string; palette: string; eye_shape: string; accessory: string }) => Promise<void>
-  updateBuddy: (data: Partial<{ name: string; species: string; palette: string; eye_shape: string; accessory: string }>) => Promise<void>
+  createBuddy: (data: { name: string; species: string; palette: string; eye_shape: string; accessories: string }) => Promise<void>
+  updateBuddy: (data: Partial<{ name: string; species: string; palette: string; eye_shape: string; accessories: string }>) => Promise<void>
   setBuddyMood: (mood: string) => void
   setBuddyMessage: (msg: string) => void
 
   // Voice actions
+  voiceListening: boolean
+  speakText: string
   setSpeakText: (text: string) => void
   processVoiceCommand: (text: string) => Promise<void>
 
@@ -116,6 +122,10 @@ interface AppState {
   setSessionActivity: (msg: string) => void
 
   // File Search actions
+  searchFiles: (root: string, query: string, mode?: string) => Promise<void>
+  searchSymbols: (root: string, query: string) => Promise<void>
+  fetchRecentFiles: (root?: string) => Promise<void>
+  clearSearch: () => void
   searchResults: Array<{ path: string; score: number; mode: string; matches?: number }>
   searchSymbolResults: Array<{ path: string; symbol: string; line: number }>
   recentFiles: Array<{ path: string; score: number; access_count: number; last_access: string }>
@@ -124,6 +134,8 @@ interface AppState {
   searchMode: string
 
   // Context Optimizer actions
+  fetchContextStats: () => Promise<void>
+  resetContextStats: () => Promise<void>
   contextStats: { total_raw_chars: number; total_compressed_chars: number; sandbox_calls: number; savings_percent: number; savings_by_tool: Record<string, { calls: number; raw_chars: number; compressed_chars: number }> } | null
 
   // Experiment / Autoresearch actions
@@ -546,7 +558,7 @@ export const useAppStore = create<AppState>((set, get) => ({
     }
   },
 
-  createBuddy: async (data: { name: string; species: string; palette: string; eye_shape: string; accessory: string }) => {
+  createBuddy: async (data: { name: string; species: string; palette: string; eye_shape: string; accessories: string }) => {
     try {
       set({ buddyLoading: true })
       const buddy = await api.createBuddy(data)
@@ -556,7 +568,7 @@ export const useAppStore = create<AppState>((set, get) => ({
     }
   },
 
-  updateBuddy: async (data: Partial<{ name: string; species: string; palette: string; eye_shape: string; accessory: string }>) => {
+  updateBuddy: async (data: Partial<{ name: string; species: string; palette: string; eye_shape: string; accessories: string }>) => {
     try {
       set({ buddyLoading: true })
       const buddy = await api.updateBuddy(data)
@@ -582,8 +594,7 @@ export const useAppStore = create<AppState>((set, get) => ({
       if ((res as any)?.action && (res as any).action !== "unknown" && (res as any).action !== "help") {
         setTimeout(() => set({ buddyMood: "idle" }), 3000)
       }
-      return res
-    } catch (e) {
+    } catch {
       set({ buddyMood: "error", buddyMessage: "Command failed", voiceListening: false })
     }
   },

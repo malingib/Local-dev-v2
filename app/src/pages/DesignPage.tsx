@@ -3,7 +3,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
 import { Badge } from "@/components/ui/badge"
 import { Spinner } from "@/components/ui/spinner"
 import * as api from "@/lib/api"
@@ -18,7 +17,7 @@ export function DesignPage() {
   const [protoTitle, setProtoTitle] = useState("My Prototype")
   const [protoStyle, setProtoStyle] = useState("glassmorphism")
   const [protoPalette, setProtoPalette] = useState("ocean")
-  const [protoFont, setProtoFont] = useState("modern")
+  const [protoFont] = useState("modern")
   const [screenCount, setScreenCount] = useState(3)
   const [projectType, setProjectType] = useState("web")
   const [viewHtml, setViewHtml] = useState(false)

@@ -1,12 +1,13 @@
 import { useLocation, useNavigate } from "react-router-dom"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
-import { LayoutDashboard, User, Code2, BookOpen, Sparkles, Settings, PanelLeftClose, PanelLeft, FlaskConical, Search, Share2, Brain, Palette, Server } from "lucide-react"
+import { LayoutDashboard, User, Code2, BookOpen, Sparkles, Settings, PanelLeftClose, PanelLeft, FlaskConical, Search, Share2, Brain, Palette, Server, Users } from "lucide-react"
 import { useState } from "react"
 
 const NAV_ITEMS = [
   { path: "/", label: "Dashboard", icon: LayoutDashboard },
   { path: "/agent", label: "Agent", icon: User },
+  { path: "/swarm", label: "Swarm", icon: Users },
   { path: "/skills", label: "Skills", icon: Code2 },
   { path: "/search", label: "Search", icon: Search },
   { path: "/graph", label: "Graph", icon: Share2 },

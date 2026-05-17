@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react"
 import { useAppStore } from "@/lib/store"
-import { MessageCircle, X, Sparkles } from "lucide-react"
+import { X, Sparkles } from "lucide-react"
 
 type Mood = "idle" | "thinking" | "happy" | "sad" | "surprised" | "working" | "success" | "error"
 
@@ -63,7 +63,7 @@ export function FloatingBuddy() {
 
   if (!buddy || !visible) return null
 
-  const mood = MOOD_CONFIG[buddyMood] || MOOD_CONFIG.idle
+  const mood = MOOD_CONFIG[buddyMood as Mood] || MOOD_CONFIG.idle
   const palette = buddy.palette?.toLowerCase() || "ember"
   const bgColors: Record<string, string> = {
     ember: "from-orange-400 to-red-500", ocean: "from-blue-400 to-cyan-500",

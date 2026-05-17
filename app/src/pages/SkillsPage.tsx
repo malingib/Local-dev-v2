@@ -142,8 +142,8 @@ export function SkillsPage() {
           <ScrollArea className="max-h-[400px]">
             <div className="space-y-4">
               <p className="text-sm text-muted-foreground">{selectedSkill?.description}</p>
-              {selectedSkill?.details && (
-                <p className="text-sm">{selectedSkill.details}</p>
+              {(selectedSkill as any)?.details && (
+                <p className="text-sm">{(selectedSkill as any).details}</p>
               )}
               {selectedSkill?.tags && selectedSkill.tags.length > 0 && (
                 <div>

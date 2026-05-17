@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback, useEffect } from "react"
+import { useState, useCallback } from "react"
 import { Button } from "@/components/ui/button"
 import { Mic, MicOff, Loader2 } from "lucide-react"
 import { useAppStore } from "@/lib/store"
@@ -9,7 +9,7 @@ export function VoiceInput() {
   const [listening, setListening] = useState(false)
   const [transcript, setTranscript] = useState("")
   const [processing, setProcessing] = useState(false)
-  const { buddy, speakText, setSpeakText, processVoiceCommand } = useAppStore()
+  const { processVoiceCommand } = useAppStore()
 
   const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition
   const supported = !!SpeechRecognition

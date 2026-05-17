@@ -28,8 +28,12 @@ from backend.models import (
 from backend.session_store import get_store
 from backend.config import get_config
 from agents.orchestrator import Orchestrator
+from backend.swarm_api import app as swarm_app
 
 app = FastAPI(title="CodeAudit API", version="1.0.0")
+
+# Mount swarm API
+app.mount("/api/swarm", swarm_app)
 
 config_for_cors = get_config()
 cors_origins = getattr(config_for_cors, 'cors_origins', None) or [

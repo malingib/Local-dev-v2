@@ -1,11 +1,11 @@
 import { useEffect } from "react"
 import { BrowserRouter, Routes, Route, useNavigate } from "react-router-dom"
 import { Dashboard } from "@/pages/Dashboard"
+import { SwarmDashboard } from "@/pages/SwarmDashboard"
 import { SessionView } from "@/pages/SessionView"
 import { Settings } from "@/pages/Settings"
 import { Agent } from "@/pages/Agent"
 import { SkillsPage } from "@/pages/SkillsPage"
-import { ExperimentsPage } from "@/pages/ExperimentsPage"
 import { SearchPage } from "@/pages/SearchPage"
 import { GraphPage } from "@/pages/GraphPage"
 import { AgentLoopPage } from "@/pages/AgentLoopPage"
@@ -48,6 +48,7 @@ function App() {
             <FloatingBuddy />
             <Routes>
               <Route path="/" element={<Dashboard />} />
+              <Route path="/swarm" element={<SwarmDashboard />} />
               <Route path="/session/:id" element={<SessionView />} />
               <Route path="/settings" element={<Settings />} />
               <Route path="/agent" element={<Agent />} />

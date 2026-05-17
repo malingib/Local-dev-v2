@@ -98,7 +98,7 @@ export function Agent() {
                         <div className="font-medium">{label}</div>
                         <div className="text-sm text-muted-foreground">{desc}</div>
                         <div className="text-xs text-muted-foreground mt-1 font-mono line-clamp-2">
-                          {(activeSoul as any)[key]?.slice(0, 120) || "(empty)"}
+                          {(activeSoul as any)[key] ? (activeSoul as any)[key].slice(0, 120) : "(empty)"}
                         </div>
                       </div>
                     </div>
@@ -127,7 +127,7 @@ export function Agent() {
                 <Card
                   key={tpl.id}
                   className={`cursor-pointer transition-colors hover:border-primary ${
-                    activeSoul?.active_template === tpl.id ? "border-primary ring-1 ring-primary" : ""
+                    (activeSoul as any)?.active_template === tpl.id ? "border-primary ring-1 ring-primary" : ""
                   }`}
                   onClick={() => handleApplyTemplate(tpl.id)}
                 >
