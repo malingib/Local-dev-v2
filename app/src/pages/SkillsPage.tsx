@@ -46,78 +46,97 @@ export function SkillsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      <div className="container mx-auto py-8 px-4">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold">Skills Library</h1>
-          <p className="text-muted-foreground mt-1">Browse available agent skills and capabilities</p>
+    <div className="min-h-screen bg-slate-950 text-slate-50 swarm-grid">
+      <div className="container mx-auto py-8 px-4 relative z-10">
+        <div className="mb-8 flex items-center justify-between">
+          <div>
+            <h1 className="text-4xl font-black tracking-tight text-white uppercase italic">Toolbox</h1>
+            <p className="text-slate-400 mt-1 font-mono text-sm uppercase tracking-widest flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-blue-500 animate-pulse" />
+              Agent Capability Matrix & Functional Library
+            </p>
+          </div>
+          <div className="px-4 py-2 bg-slate-900/50 border border-slate-800 rounded-lg backdrop-blur-sm">
+            <div className="text-[10px] text-slate-500 uppercase font-bold tracking-tighter">Available Skills</div>
+            <div className="text-xl font-mono text-blue-400 font-bold">{skills.length} MODULES</div>
+          </div>
         </div>
 
         {/* Search & Filters */}
-        <div className="space-y-4 mb-6">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+        <div className="space-y-4 mb-8">
+          <div className="relative group">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-500 group-focus-within:text-blue-400 transition-colors" />
             <Input
-              placeholder="Search skills..."
+              placeholder="Search functional modules..."
               value={searchInput}
               onChange={(e) => handleSearch(e.target.value)}
               onKeyDown={handleSearchKeyDown}
-              className="pl-9"
+              className="pl-12 h-14 bg-slate-900/40 border-slate-800 text-white font-mono text-sm focus:ring-blue-500/50 backdrop-blur-md rounded-2xl"
             />
           </div>
-          <div className="flex gap-2 flex-wrap">
+          <div className="flex gap-2 flex-wrap items-center">
+            <span className="text-[10px] font-bold text-slate-600 uppercase tracking-widest mr-2">Filter Matrix:</span>
             {categories.map((cat) => (
-              <Button
+              <button
                 key={cat}
-                variant={skillCategoryFilter === cat || (cat === "All" && !skillCategoryFilter) ? "default" : "outline"}
-                size="sm"
                 onClick={() => handleCategoryClick(cat)}
+                className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider transition-all border ${
+                  skillCategoryFilter === cat || (cat === "All" && !skillCategoryFilter)
+                    ? "bg-blue-600 border-blue-500 text-white shadow-[0_0_15px_rgba(37,99,235,0.2)]"
+                    : "bg-slate-950 border-slate-800 text-slate-500 hover:border-slate-600 hover:text-slate-300"
+                }`}
               >
                 {cat}
-              </Button>
+              </button>
             ))}
           </div>
         </div>
 
         {/* Skills Grid */}
         {skillsLoading ? (
-          <div className="flex justify-center py-16"><Spinner /></div>
+          <div className="flex justify-center py-20"><Spinner /></div>
         ) : skills.length === 0 ? (
-          <div className="text-center py-16 text-muted-foreground">
-            <Code2 className="h-12 w-12 mx-auto mb-4 opacity-50" />
-            <p>No skills found matching your criteria.</p>
+          <div className="h-full min-h-[400px] flex flex-col items-center justify-center bg-slate-950/40 rounded-2xl border border-dashed border-slate-800 p-12 text-center">
+            <Code2 className="h-12 w-12 text-slate-800 mb-4" />
+            <h3 className="text-slate-500 font-black uppercase tracking-widest text-lg mb-2">No Modules Found</h3>
+            <p className="text-slate-600 font-mono text-[10px] uppercase tracking-tighter">Your query returned zero matches in the current functional library.</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
             {skills.map((skill) => (
               <Card
                 key={skill.id}
-                className="cursor-pointer hover:border-primary transition-colors"
+                className="group relative cursor-pointer glass border-slate-800 bg-slate-900/40 hover:border-blue-500/50 transition-all duration-300 overflow-hidden"
                 onClick={() => handleSkillClick(skill)}
               >
+                <div className="absolute top-0 right-0 p-3 opacity-20 group-hover:opacity-100 transition-opacity">
+                  <Code2 className="h-4 w-4 text-blue-400" />
+                </div>
                 <CardHeader className="pb-2">
-                  <div className="flex items-start justify-between">
-                    <CardTitle className="text-base">{skill.name}</CardTitle>
-                    {skill.category && (
-                      <Badge variant="secondary" className="text-xs ml-2 shrink-0">
-                        {skill.category}
-                      </Badge>
-                    )}
+                  <div className="flex items-start justify-between pr-4">
+                    <CardTitle className="text-sm font-bold text-slate-200 group-hover:text-white uppercase tracking-tight transition-colors">
+                      {skill.name}
+                    </CardTitle>
                   </div>
+                  {skill.category && (
+                    <div className="text-[9px] font-mono font-bold text-blue-500 uppercase tracking-tighter">
+                      {skill.category}
+                    </div>
+                  )}
                 </CardHeader>
                 <CardContent>
-                  <p className="text-sm text-muted-foreground line-clamp-2 mb-3">
+                  <p className="text-[11px] text-slate-500 group-hover:text-slate-400 line-clamp-2 mb-4 leading-relaxed font-sans">
                     {skill.description}
                   </p>
                   {skill.tags && skill.tags.length > 0 && (
-                    <div className="flex gap-1 flex-wrap">
-                      {skill.tags.slice(0, 4).map((tag) => (
-                        <Badge key={tag} variant="outline" className="text-xs">
+                    <div className="flex gap-1.5 flex-wrap">
+                      {skill.tags.slice(0, 3).map((tag) => (
+                        <span key={tag} className="text-[8px] font-mono text-slate-600 bg-slate-950 px-1.5 py-0.5 rounded border border-slate-800 uppercase tracking-tighter group-hover:border-slate-700">
                           {tag}
-                        </Badge>
+                        </span>
                       ))}
-                      {skill.tags.length > 4 && (
-                        <span className="text-xs text-muted-foreground">+{skill.tags.length - 4}</span>
+                      {skill.tags.length > 3 && (
+                        <span className="text-[8px] font-mono text-slate-700">+{skill.tags.length - 3}</span>
                       )}
                     </div>
                   )}

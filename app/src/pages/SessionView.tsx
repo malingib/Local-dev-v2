@@ -9,6 +9,11 @@ import { FindingCard } from "@/components/FindingCard"
 import { ActivityFeed } from "@/components/ActivityFeed"
 import { useAppStore } from "@/lib/store"
 import type { Finding, FindingStatus } from "@/types"
+import {
+  ArrowLeft, RefreshCcw, Play, BarChart3,
+  Activity as ActivityIcon, ListFilter
+} from "lucide-react"
+import { cn } from "@/lib/utils"
 
 export function SessionView() {
   const { id } = useParams<{ id: string }>()
@@ -93,72 +98,107 @@ export function SessionView() {
   if (!id) return null
 
   return (
-    <div className="min-h-screen bg-background">
-      <div className="container mx-auto py-6 px-4">
+    <div className="min-h-screen bg-[#020617] text-slate-200 swarm-grid p-6">
+      <div className="max-w-7xl mx-auto space-y-8">
+
         {/* Header */}
-        <div className="flex items-center justify-between mb-6">
-          <div>
-            <div className="flex items-center gap-3">
-              <Button variant="outline" size="sm" onClick={() => navigate("/")}>
-                ← Back
-              </Button>
-              <h1 className="text-2xl font-bold">
-                {currentSession?.project?.name || "Loading..."}
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={() => navigate("/")}
+              className="border-slate-800 bg-slate-900/50 hover:bg-slate-800 rounded-xl"
+            >
+              <ArrowLeft className="h-4 w-4" />
+            </Button>
+            <div>
+              <h1 className="text-2xl font-bold tracking-tight">
+                {currentSession?.project_name || "Audit Intelligence"}
               </h1>
-            </div>
-            {currentSession && (
-              <div className="flex items-center gap-2 mt-2 text-sm text-muted-foreground">
-                <Badge variant="outline">{currentSession.state}</Badge>
-                <Badge variant="outline">{currentSession.mode}</Badge>
-                {currentSession.project?.path && (
-                  <span className="font-mono text-xs">{currentSession.project.path}</span>
+              <div className="flex items-center gap-3 mt-1">
+                {currentSession && (
+                  <>
+                    <Badge variant="outline" className="bg-primary/10 text-primary border-primary/20 uppercase text-[10px] tracking-widest font-bold">
+                      {currentSession.state}
+                    </Badge>
+                    <div className="h-1 w-1 rounded-full bg-slate-700" />
+                    <span className="text-[10px] text-slate-500 uppercase tracking-widest font-bold">{currentSession.mode}</span>
+                    {currentSession.project_path && (
+                      <>
+                        <div className="h-1 w-1 rounded-full bg-slate-700" />
+                        <span className="font-mono text-xs text-slate-600 truncate max-w-xs">{currentSession.project_path}</span>
+                      </>
+                    )}
+                  </>
                 )}
               </div>
-            )}
+            </div>
           </div>
-          <div className="flex gap-2">
-            <Button variant="outline" onClick={() => refreshSession()}>
-              Refresh
+
+          <div className="flex gap-3">
+            <Button
+              variant="outline"
+              onClick={() => refreshSession()}
+              className="border-slate-800 bg-slate-900/50 hover:bg-slate-800 text-slate-300 rounded-xl"
+            >
+              <RefreshCcw className="h-4 w-4 mr-2" />
+              Sync
             </Button>
             {currentSession?.state === "ingest" && (
-              <Button onClick={handleStartAudit}>
-                Start Audit
+              <Button
+                onClick={handleStartAudit}
+                className="bg-primary hover:bg-primary/90 text-primary-foreground font-bold rounded-xl shadow-lg shadow-primary/20"
+              >
+                <Play className="h-4 w-4 mr-2 fill-current" />
+                INITIATE AUDIT
               </Button>
             )}
           </div>
         </div>
 
         {loading && !currentSession ? (
-          <div className="flex justify-center py-16">
-            <Spinner />
+          <div className="flex justify-center py-32">
+            <Spinner className="h-8 w-8 text-primary" />
           </div>
         ) : currentSession ? (
-          <Tabs defaultValue="findings">
-            <TabsList className="mb-4">
-              <TabsTrigger value="findings">
-                Findings ({currentFindings.length})
-              </TabsTrigger>
-              <TabsTrigger value="activity">Activity</TabsTrigger>
-              <TabsTrigger value="report">Report</TabsTrigger>
-            </TabsList>
+          <Tabs defaultValue="findings" className="space-y-6">
+            <div className="flex items-center justify-between">
+              <TabsList className="bg-slate-900/50 border border-slate-800 p-1 rounded-xl">
+                <TabsTrigger value="findings" className="rounded-lg data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+                  <ListFilter className="h-4 w-4 mr-2" />
+                  Findings ({currentFindings.length})
+                </TabsTrigger>
+                <TabsTrigger value="activity" className="rounded-lg data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+                  <ActivityIcon className="h-4 w-4 mr-2" />
+                  Activity
+                </TabsTrigger>
+                <TabsTrigger value="report" className="rounded-lg data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+                  <BarChart3 className="h-4 w-4 mr-2" />
+                  Report
+                </TabsTrigger>
+              </TabsList>
+            </div>
 
             {/* Findings Tab */}
-            <TabsContent value="findings" className="space-y-4">
+            <TabsContent value="findings" className="space-y-6 outline-none">
               {/* Status filter buttons */}
-              <div className="flex gap-2 flex-wrap">
+              <div className="flex gap-2 flex-wrap p-1 bg-slate-950/50 border border-slate-800 rounded-xl w-fit">
                 <Button
-                  variant={filter === "all" ? "default" : "outline"}
+                  variant={filter === "all" ? "default" : "ghost"}
                   size="sm"
                   onClick={() => setFilter("all")}
+                  className={cn("text-xs rounded-lg h-8", filter === "all" ? "bg-slate-800" : "text-slate-500")}
                 >
                   All ({currentFindings.length})
                 </Button>
                 {Object.entries(findingsByStatus).map(([status, count]) => (
                   <Button
                     key={status}
-                    variant={filter === status ? "default" : "outline"}
+                    variant={filter === status ? "default" : "ghost"}
                     size="sm"
                     onClick={() => setFilter(status as FindingStatus)}
+                    className={cn("text-xs rounded-lg h-8 uppercase", filter === status ? "bg-slate-800" : "text-slate-500")}
                   >
                     {status.replace(/_/g, " ")} ({count})
                   </Button>
@@ -167,13 +207,13 @@ export function SessionView() {
 
               {/* Findings list */}
               {filteredFindings.length === 0 ? (
-                <Card>
-                  <CardContent className="py-12 text-center text-muted-foreground">
-                    No findings match this filter
+                <Card className="bg-slate-900/20 border-slate-800 border-dashed">
+                  <CardContent className="py-24 text-center text-slate-500 font-mono text-sm">
+                    NO FINDINGS MATCH THE CURRENT CRITERIA
                   </CardContent>
                 </Card>
               ) : (
-                <div className="grid gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {filteredFindings.map((finding: Finding) => (
                     <FindingCard
                       key={finding.id}
@@ -188,60 +228,45 @@ export function SessionView() {
             </TabsContent>
 
             {/* Activity Tab */}
-            <TabsContent value="activity">
+            <TabsContent value="activity" className="h-[600px] outline-none">
               <ActivityFeed activities={currentActivity} />
             </TabsContent>
 
             {/* Report Tab */}
-            <TabsContent value="report">
-              <Card>
+            <TabsContent value="report" className="space-y-6 outline-none">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                {[
+                  { label: "Total Findings", value: currentFindings.length, color: "text-slate-200" },
+                  { label: "Critical Priority", value: currentFindings.filter((f) => f.severity === "critical").length, color: "text-red-500" },
+                  { label: "High Impact", value: currentFindings.filter((f) => f.severity === "high").length, color: "text-orange-500" },
+                  { label: "Applied Fixes", value: currentFindings.filter((f) => f.status === "applied").length, color: "text-green-500" },
+                ].map((stat) => (
+                  <Card key={stat.label} className="bg-slate-900/40 border-slate-800">
+                    <CardHeader className="pb-2">
+                      <CardDescription className="text-[10px] uppercase tracking-widest font-bold text-slate-500">{stat.label}</CardDescription>
+                      <CardTitle className={cn("text-4xl font-black", stat.color)}>{stat.value}</CardTitle>
+                    </CardHeader>
+                  </Card>
+                ))}
+              </div>
+
+              <Card className="bg-slate-900/40 border-slate-800">
                 <CardHeader>
-                  <CardTitle>Audit Report</CardTitle>
-                  <CardDescription>Summary of findings</CardDescription>
+                  <CardTitle className="text-sm font-bold uppercase tracking-widest text-slate-400">Security Assessment</CardTitle>
+                  <CardDescription>Synthesized audit summary from multi-agent consensus</CardDescription>
                 </CardHeader>
-                <CardContent>
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    <Card>
-                      <CardHeader className="pb-2">
-                        <CardTitle className="text-3xl">{currentFindings.length}</CardTitle>
-                        <CardDescription>Total Findings</CardDescription>
-                      </CardHeader>
-                    </Card>
-                    <Card>
-                      <CardHeader className="pb-2">
-                        <CardTitle className="text-3xl text-red-500">
-                          {currentFindings.filter((f) => f.severity === "critical").length}
-                        </CardTitle>
-                        <CardDescription>Critical</CardDescription>
-                      </CardHeader>
-                    </Card>
-                    <Card>
-                      <CardHeader className="pb-2">
-                        <CardTitle className="text-3xl text-orange-500">
-                          {currentFindings.filter((f) => f.severity === "high").length}
-                        </CardTitle>
-                        <CardDescription>High</CardDescription>
-                      </CardHeader>
-                    </Card>
-                    <Card>
-                      <CardHeader className="pb-2">
-                        <CardTitle className="text-3xl text-green-500">
-                          {currentFindings.filter((f) => f.status === "applied").length}
-                        </CardTitle>
-                        <CardDescription>Applied</CardDescription>
-                      </CardHeader>
-                    </Card>
-                  </div>
+                <CardContent className="h-64 flex items-center justify-center text-slate-600 italic font-mono text-sm">
+                  REACHING CONSENSUS ON FINAL REPORT...
                 </CardContent>
               </Card>
             </TabsContent>
           </Tabs>
         ) : (
-          <Card>
-            <CardContent className="py-12 text-center">
-              <p className="text-muted-foreground">Session not found</p>
-              <Button variant="link" onClick={() => navigate("/")}>
-                Go back to dashboard
+          <Card className="bg-slate-900/40 border-slate-800 border-dashed">
+            <CardContent className="py-32 text-center">
+              <p className="text-slate-500 font-mono text-sm mb-6">MISSION DATA NOT FOUND OR ACCESSIBLE</p>
+              <Button variant="outline" className="border-slate-800 bg-slate-900 hover:bg-slate-800 text-slate-300 rounded-xl" onClick={() => navigate("/")}>
+                RETURN TO CONTROL CENTER
               </Button>
             </CardContent>
           </Card>
