@@ -71,13 +71,13 @@ export function FindingCard({ finding, onFix, onApprove, onReject }: FindingCard
           <div className="flex items-center gap-1.5">
             <Code className="h-3 w-3" />
             <span className="truncate max-w-[200px]">
-              {(finding.location?.file as string) || "Unknown Location"}
+              {typeof finding.location?.file === 'string' ? finding.location.file : "Unknown Location"}
             </span>
           </div>
-          {finding.location?.line_start && (
+          {typeof finding.location?.line_start === 'number' && (
             <div className="flex items-center gap-1.5">
               <span className="h-1 w-1 rounded-full bg-slate-700" />
-              <span>Line {finding.location.line_start as number}</span>
+              <span>Line {finding.location.line_start}</span>
             </div>
           )}
         </div>

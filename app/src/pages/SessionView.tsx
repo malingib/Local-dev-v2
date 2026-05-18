@@ -114,7 +114,7 @@ export function SessionView() {
             </Button>
             <div>
               <h1 className="text-2xl font-bold tracking-tight">
-                {currentSession?.project_name || "Audit Intelligence"}
+                {currentSession?.project?.name || "Audit Intelligence"}
               </h1>
               <div className="flex items-center gap-3 mt-1">
                 {currentSession && (
@@ -124,10 +124,10 @@ export function SessionView() {
                     </Badge>
                     <div className="h-1 w-1 rounded-full bg-slate-700" />
                     <span className="text-[10px] text-slate-500 uppercase tracking-widest font-bold">{currentSession.mode}</span>
-                    {currentSession.project_path && (
+                    {currentSession.project?.path && (
                       <>
                         <div className="h-1 w-1 rounded-full bg-slate-700" />
-                        <span className="font-mono text-xs text-slate-600 truncate max-w-xs">{currentSession.project_path}</span>
+                        <span className="font-mono text-xs text-slate-600 truncate max-w-xs">{currentSession.project.path}</span>
                       </>
                     )}
                   </>

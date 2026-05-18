@@ -129,9 +129,12 @@ export interface ProjectInfo {
 export interface ActivityLog {
   id: string
   agent: string
+  type?: string
   message: string
   level: "info" | "success" | "warning" | "error"
+  status?: "info" | "success" | "warning" | "error"
   timestamp: string
+  detail?: string
   metadata: Record<string, unknown>
 }
 
@@ -167,6 +170,7 @@ export interface SessionSummary {
   mode: string
   project_name: string
   project_path: string
+  github_url?: string
   findings_total: number
   findings_critical: number
   findings_high: number
