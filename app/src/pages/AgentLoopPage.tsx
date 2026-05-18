@@ -8,7 +8,7 @@ import { Spinner } from "@/components/ui/spinner"
 import * as api from "@/lib/api"
 import {
   RotateCcw, Activity, TrendingUp, Lightbulb, CheckCircle2,
-  XCircle, Brain, Zap, Target, Terminal, Search, Layers, Cpu
+  XCircle, Brain, Zap, Target, Terminal, Search
 } from "lucide-react"
 
 export function AgentLoopPage() {

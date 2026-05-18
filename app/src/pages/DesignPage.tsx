@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label"
 import { Badge } from "@/components/ui/badge"
 import { Spinner } from "@/components/ui/spinner"
 import * as api from "@/lib/api"
-import { Palette, Type, Layout, Eye, Download, Wand2, Box, Layers, Monitor } from "lucide-react"
+import { Palette, Eye, Download, Wand2, Box, Layers, Monitor } from "lucide-react"
 
 export function DesignPage() {
   const [styles, setStyles] = useState<Array<Record<string, unknown>>>([])

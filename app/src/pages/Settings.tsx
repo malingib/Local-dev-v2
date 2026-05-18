@@ -21,7 +21,7 @@ export function Settings() {
   useEffect(() => {
     fetchConfig()
     fetchHealth()
-  }, [])
+  }, [fetchConfig, fetchHealth])
 
   async function handleSaveKeys() {
     setSaving(true)

@@ -1,10 +1,9 @@
 import { useState, useEffect, useRef } from "react"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import {
   Bot, Send, Terminal, Users, Settings2, Activity,
   Network, Cpu, Zap, Radio, MessageSquare, Shield,
@@ -102,7 +101,7 @@ export function SwarmDashboard() {
 
         <div className="flex items-center gap-4">
           <div className="flex -space-x-2">
-            {agents.slice(0, 5).map((a, i) => (
+            {agents.slice(0, 5).map((a) => (
               <div
                 key={a.id}
                 className="h-8 w-8 rounded-full border-2 border-slate-950 bg-slate-800 flex items-center justify-center overflow-hidden"
@@ -244,8 +243,8 @@ export function SwarmDashboard() {
             <CardContent className="p-0 flex-1 overflow-hidden relative">
               <ScrollArea className="h-full w-full" ref={scrollRef}>
                 <div className="p-4 font-mono text-xs space-y-3">
-                  {activity.map((msg, i) => (
-                    <div key={i} className="group animate-in fade-in slide-in-from-left-2 duration-300">
+                  {activity.map((msg, idx) => (
+                    <div key={idx} className="group animate-in fade-in slide-in-from-left-2 duration-300">
                       <div className="flex items-start gap-3">
                         <div className="shrink-0 text-slate-600 mt-0.5">[{new Date().toLocaleTimeString([], { hour12: false })}]</div>
                         <div className="flex-1">

@@ -23,7 +23,7 @@ export function SearchPage() {
   useEffect(() => {
     fetchRecentFiles(root)
     fetchContextStats()
-  }, [])
+  }, [fetchRecentFiles, fetchContextStats, root])
 
   function handleSearch() {
     if (!query.trim()) return

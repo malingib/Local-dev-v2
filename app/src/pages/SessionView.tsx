@@ -41,7 +41,7 @@ export function SessionView() {
     return () => {
       disconnectWebSocket()
     }
-  }, [id])
+  }, [id, selectSession, disconnectWebSocket])
 
   // Use store-managed polling — only active when WebSocket is not available
   useEffect(() => {
@@ -55,7 +55,7 @@ export function SessionView() {
     if (isActive) {
       startPolling()
     }
-  }, [currentSession?.state])
+  }, [currentSession, startPolling])
 
   const handleStartAudit = useCallback(() => {
     if (id) startAudit(id)

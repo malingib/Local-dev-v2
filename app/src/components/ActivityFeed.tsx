@@ -51,7 +51,7 @@ export function ActivityFeed({ activities }: ActivityFeedProps) {
 
                 <div className="flex items-center gap-2 mb-1">
                   <span className="text-[10px] font-mono text-slate-600">
-                    {new Date(activity.timestamp || Date.now()).toLocaleTimeString([], { hour12: false })}
+                    {activity.timestamp ? new Date(activity.timestamp).toLocaleTimeString([], { hour12: false }) : "--:--:--"}
                   </span>
                   <Badge variant="outline" className="text-[9px] h-4 py-0 px-1 border-slate-800 bg-slate-900/50 text-slate-400 uppercase">
                     {activity.type}

@@ -11,7 +11,7 @@ import { SessionMode } from "@/types"
 import { AgentExecGraph } from "@/components/AgentExecGraph"
 import {
   Rocket, Plus, History, Activity, ShieldCheck,
-  Search, Github, FolderOpen, ChevronRight, Sparkles, Zap
+  Github, FolderOpen, ChevronRight, Sparkles, Zap
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 
@@ -37,7 +37,7 @@ export function Dashboard() {
   useEffect(() => {
     fetchSessions()
     fetchHealth()
-  }, [])
+  }, [fetchSessions, fetchHealth])
 
   async function handleCreateSession() {
     const pathOrUrl = projectPath || githubUrl
