@@ -11,7 +11,7 @@ import { SessionMode } from "@/types"
 import { AgentExecGraph } from "@/components/AgentExecGraph"
 import {
   Rocket, Plus, History, Activity, ShieldCheck,
-  Search, Github, FolderOpen, ChevronRight, Sparkles, Zap
+  Github, FolderOpen, ChevronRight, Sparkles, Zap
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 
@@ -25,7 +25,10 @@ export function Dashboard() {
   const [mode, setMode] = useState<SessionMode>(SessionMode.AUDIT)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
+  const isElectron = !!(window as any).electronAPI
+
   const supportsDirectoryPicker = (() => {
+    if (isElectron) return true
     if (typeof window === "undefined" || typeof document === "undefined") return false
     const input = document.createElement("input")
     return "webkitdirectory" in input || "showDirectoryPicker" in window
@@ -34,7 +37,7 @@ export function Dashboard() {
   useEffect(() => {
     fetchSessions()
     fetchHealth()
-  }, [])
+  }, [fetchSessions, fetchHealth])
 
   async function handleCreateSession() {
     const pathOrUrl = projectPath || githubUrl
@@ -113,7 +116,14 @@ export function Dashboard() {
                           variant="secondary"
                           size="sm"
                           className="bg-slate-800 hover:bg-slate-700 text-slate-200"
-                          onClick={() => fileInputRef.current?.click()}
+                          onClick={async () => {
+                            if (isElectron) {
+                              const path = await (window as any).electronAPI.selectDirectory()
+                              if (path) setProjectPath(path)
+                            } else {
+                              fileInputRef.current?.click()
+                            }
+                          }}
                         >
                           Browse
                         </Button>

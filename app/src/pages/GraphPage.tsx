@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge"
 import { Spinner } from "@/components/ui/spinner"
 import * as api from "@/lib/api"
 import {
-  Share2, FileSearch, GitBranch, BarChart3, Layers,
+  Share2, FileSearch, GitBranch, BarChart3,
   Download, Scan,
 } from "lucide-react"
 

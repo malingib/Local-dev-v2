@@ -10,8 +10,9 @@ interface ActivityFeedProps {
 
 export function ActivityFeed({ activities }: ActivityFeedProps) {
   const getIcon = (type: string, status: string) => {
-    if (status === "error") return <AlertTriangle className="h-4 w-4 text-red-500" />
-    if (status === "success") return <CheckCircle2 className="h-4 w-4 text-green-500" />
+    const level = status || "info"
+    if (level === "error") return <AlertTriangle className="h-4 w-4 text-red-500" />
+    if (level === "success") return <CheckCircle2 className="h-4 w-4 text-green-500" />
 
     switch (type) {
       case "orchestrator": return <Zap className="h-4 w-4 text-primary" />
@@ -41,31 +42,35 @@ export function ActivityFeed({ activities }: ActivityFeedProps) {
               <p className="text-xs font-mono">No activity logs recorded...</p>
             </div>
           ) : (
-            activities.map((activity, i) => (
+            activities.map((activity, i) => {
+              const status = activity.status || activity.level || "info"
+              const type = activity.type || activity.agent || "system"
+
+              return (
               <div key={i} className="group relative pl-6 pb-4 border-l border-slate-800 last:pb-0">
                 <div className={cn(
                   "absolute left-[-5px] top-0 h-2.5 w-2.5 rounded-full border-2 border-slate-950",
-                  activity.status === "error" ? "bg-red-500" :
-                  activity.status === "success" ? "bg-green-500" : "bg-primary"
+                  status === "error" ? "bg-red-500" :
+                  status === "success" ? "bg-green-500" : "bg-primary"
                 )} />
 
                 <div className="flex items-center gap-2 mb-1">
                   <span className="text-[10px] font-mono text-slate-600">
-                    {new Date(activity.timestamp || Date.now()).toLocaleTimeString([], { hour12: false })}
+                    {activity.timestamp ? new Date(activity.timestamp).toLocaleTimeString([], { hour12: false }) : "--:--:--"}
                   </span>
                   <Badge variant="outline" className="text-[9px] h-4 py-0 px-1 border-slate-800 bg-slate-900/50 text-slate-400 uppercase">
-                    {activity.type}
+                    {type}
                   </Badge>
                 </div>
 
                 <div className="flex items-start gap-3">
                   <div className="mt-0.5 opacity-50 group-hover:opacity-100 transition-opacity">
-                    {getIcon(activity.type, activity.status)}
+                    {getIcon(type, status)}
                   </div>
                   <div className="flex-1">
                     <p className={cn(
                       "text-xs leading-relaxed",
-                      activity.status === "error" ? "text-red-400 font-medium" : "text-slate-300"
+                      status === "error" ? "text-red-400 font-medium" : "text-slate-300"
                     )}>
                       {activity.message}
                     </p>
@@ -77,7 +82,8 @@ export function ActivityFeed({ activities }: ActivityFeedProps) {
                   </div>
                 </div>
               </div>
-            )).reverse()
+              )
+            }).reverse()
           )}
         </div>
       </ScrollArea>

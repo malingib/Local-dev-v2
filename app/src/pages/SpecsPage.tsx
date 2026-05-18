@@ -7,7 +7,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { Badge } from "@/components/ui/badge"
 import { Spinner } from "@/components/ui/spinner"
 import * as api from "@/lib/api"
-import { FileText, ListChecks, Code, Mic, Cpu, Terminal, Zap, Shield, Globe } from "lucide-react"
+import { FileText, ListChecks, Code, Mic, Cpu, Terminal, Zap, Globe } from "lucide-react"
 
 export function SpecsPage() {
   const [specs, setSpecs] = useState<Array<Record<string, unknown>>>([])

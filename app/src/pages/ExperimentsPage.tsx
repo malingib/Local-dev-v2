@@ -9,7 +9,7 @@ import { Spinner } from "@/components/ui/spinner"
 import { useAppStore } from "@/lib/store"
 import {
   FlaskConical, Play, Plus, Trash2, Download, RotateCcw,
-  Lightbulb, FileCode, Target, BarChart3,
+  Lightbulb, Target, BarChart3,
 } from "lucide-react"
 
 export function ExperimentsPage() {
@@ -249,7 +249,7 @@ export function ExperimentsPage() {
                           <div className="text-2xl font-mono font-black text-violet-400">
                             {currentExperiment.experiments.filter(e => e.status === "kept").length}
                           </div>
-                          <div className-[10px] text-slate-500 uppercase font-bold tracking-widest mt-1">Mutations Kept</div>
+                          <div className="text-[10px] text-slate-500 uppercase font-bold tracking-widest mt-1">Mutations Kept</div>
                         </div>
                       </div>
 
