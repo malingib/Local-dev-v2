@@ -25,7 +25,10 @@ export function Dashboard() {
   const [mode, setMode] = useState<SessionMode>(SessionMode.AUDIT)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
+  const isElectron = !!(window as any).electronAPI
+
   const supportsDirectoryPicker = (() => {
+    if (isElectron) return true
     if (typeof window === "undefined" || typeof document === "undefined") return false
     const input = document.createElement("input")
     return "webkitdirectory" in input || "showDirectoryPicker" in window
@@ -113,7 +116,14 @@ export function Dashboard() {
                           variant="secondary"
                           size="sm"
                           className="bg-slate-800 hover:bg-slate-700 text-slate-200"
-                          onClick={() => fileInputRef.current?.click()}
+                          onClick={async () => {
+                            if (isElectron) {
+                              const path = await (window as any).electronAPI.selectDirectory()
+                              if (path) setProjectPath(path)
+                            } else {
+                              fileInputRef.current?.click()
+                            }
+                          }}
                         >
                           Browse
                         </Button>

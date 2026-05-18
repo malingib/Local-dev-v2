@@ -119,9 +119,15 @@ class SwarmCoordinator:
         return []
 
     async def create_session(self, project_path: str, github_url: Optional[str] = None):
-        session_id = str(uuid.uuid4())
-        # Store session info
-        return session_id
+        from backend.api import CreateSessionRequest, create_session
+        req = CreateSessionRequest(project_path=project_path, github_url=github_url)
+        res = await create_session(req)
+        return res["session_id"]
 
     async def get_session(self, session_id: str):
-        return {"id": session_id}
+        from backend.api import get_session
+        return await get_session(session_id)
+
+    async def list_sessions(self):
+        from backend.api import list_sessions
+        return await list_sessions()
