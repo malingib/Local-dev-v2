@@ -5,9 +5,9 @@ from .consensus import ConsensusEngine, ConsensusMode
 from .round_table import RoundTable
 from .base_agent import BaseSwarmAgent, AgentConfig
 from .agents import (
-    OrchestratorAgent, CoderAgent, DebuggerAgent, UIDesignerAgent,
-    DatabaseAgent, BackendAgent, OptimizerAgent, QAReviewerAgent,
-    CriticAgent, SelfModifierAgent
+    ArchitectAgent, UIDesignerAgent, CoderAgent, BackendAgent,
+    DatabaseAgent, QAReviewerAgent, SecurityAgent, DebuggerAgent,
+    OptimizerAgent, SelfModifierAgent
 )
 
 __all__ = [
@@ -21,14 +21,14 @@ __all__ = [
     'RoundTable',
     'BaseSwarmAgent',
     'AgentConfig',
-    'OrchestratorAgent',
-    'CoderAgent',
-    'DebuggerAgent',
+    'ArchitectAgent',
     'UIDesignerAgent',
-    'DatabaseAgent',
+    'CoderAgent',
     'BackendAgent',
-    'OptimizerAgent',
+    'DatabaseAgent',
     'QAReviewerAgent',
-    'CriticAgent',
+    'SecurityAgent',
+    'DebuggerAgent',
+    'OptimizerAgent',
     'SelfModifierAgent'
 ]
