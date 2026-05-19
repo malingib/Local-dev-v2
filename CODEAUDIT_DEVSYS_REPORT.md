@@ -1,57 +1,48 @@
-# CodeAudit Dev-Sys: Review & Implementation Report
+# CodeAudit Integrated Dev-Sys: Final Review & Strategy
 
 ## 1. Executive Summary
 
-This report outlines the transformation of CodeAudit into a **Technical Development System (Dev-Sys)**. We have eliminated all non-technical managerial overhead and refocused the agent swarm into a highly organized, stage-gated **Development Lifecycle**.
+The **CodeAudit Integrated Dev-Sys** represents the final evolution of our agentic architecture. It moves beyond simple "auditing" into a high-fidelity **Engineering Factory**. By synthesizing the development lifecycle with advanced "Super-Agent" features (L1-L5 extraction, DAG-based tasking, HALO loops, and Dialectic Modeling), we have created a system that is organized, technical-first, and autonomously self-improving.
 
 ---
 
-## 2. The Dev-Sys Architecture: Stage-Gated Lifecycle
+## 2. Integrated Feature Matrix
 
-The best way to organize the system is to map agents directly to the **Software Development Life Cycle (SDLC)**.
-
-### **A. Architecture & Design Stage**
-*   **Lead:** Architect (Backend/Database).
-*   **Integrated Skills:** Systematic Design, API Specification, Schema Modeling.
-
-### **B. Implementation Stage**
-*   **Lead:** Software Engineer (Coder).
-*   **Integrated Skills:** Idiomatic Implementation, Unit Testing, Documentation.
-
-### **C. Verification & Security Stage**
-*   **Lead:** QA Engineer & Security Auditor.
-*   **Integrated Skills:** Integration Testing, Regression Analysis, Vulnerability Scanning.
-
-### **D. Evolution & Optimization Stage**
-*   **Lead:** Performance Engineer & Self-Modifier.
-*   **Integrated Skills:** Profiling, Bottleneck Removal, Recursive Self-Improvement.
+| Stage | Agent Role | Core Feature Integration | Inspiration |
+| :--- | :--- | :--- | :--- |
+| **Architecture** | Architect | Dialectic User Modeling & Knowledge Graph | Hermes / Graphify |
+| **Implementation**| Coder | DAG-Based Task Execution (Non-Linear) | Windmill / T3Code |
+| **Verification** | Auditor/QA | L1-L5 Deep Extraction (AST to Data Flow) | OpenCode / Distil |
+| **Evolution** | Self-Modifier | Autonomous Experiment Loops (Time-Budgeted) | Karpathy / HALO |
 
 ---
 
-## 3. Streamlined Dev-Flow: Eliminating Unstructured Chatter
+## 3. Technical Strategy: From "Addons" to "Integrated Capabilities"
 
-We are replacing the "Round Table" consensus model with a **Directed Handoff Protocol**:
+We have discarded the "Skills as Addons" model. In the Integrated Dev-Sys, a "Skill" is a native operational method of a lifecycle agent:
 
-1.  **Strict Hand-offs:** Implementation *cannot* begin without a finalized Architecture artifact. Verification *cannot* begin without a passing Implementation build.
-2.  **Gate-Driven Feedback:** If Verification fails, it returns a **Structured Defect Report** to Implementation. This is not a "discussion" but a technical requirement for rework.
-3.  **Active Skill Integration:** "Skills" are now internal agent methods. A "Security Auditor" doesn't "use" a scanner; they **are** the scanner's orchestrator, automatically running it as part of the Verification stage.
+1.  **Identity-Integrated Knowledge:** The **FTS5 Wiki** and **User Preferences** are not external libraries; they are the "Long Term Memory" that agents query as naturally as their own local variables.
+2.  **Structural Execution:** The `TaskEngine` is being upgraded from a simple queue to a **DAG-based scheduler**. This allows the "Implementation" stage to scale across multiple files simultaneously while respecting architectural dependencies.
+3.  **High-Fidelity Gates:** Verification is no longer just "Running a Tool." It is a **Deep Extraction Audit** (L1-L5). The Auditor builds a full "Call and Data Flow Graph" to verify the Coder's implementation against the Architect's spec.
 
 ---
 
-## 4. Implementation Strategy
+## 4. Advice for Final Implementation
 
-### **A. Role Refinement**
-*   **Action:** Update `agents.py` to remove "Orchestrator" and "Project Manager" roles. Re-assign coordination to the **Architect** (who starts the lifecycle) and the **QA Lead** (who governs the gates).
+### **A. Refine the Agent Identity (Soul)**
+*   **Action:** Update the `SoulManager` to include "Dialectic Modeling" fields. The agent should learn *how* the user builds, not just *what* they build.
 
-### **B. Automated Lifecycle Gates**
-*   **Action:** Modify the `TaskEngine` to enforce "Stage Requisites." A task cannot move from `implementing` to `verifying` until a test suite has been generated.
+### **B. Implement L1-L5 Lifecycle Integration**
+*   **Action:** Wire the `code_extractor.py` directly into the Verification stage. The Auditor's report should be based on structural analysis (AST, CFG) rather than just LLM intuition.
 
-### **C. Reducing Automation Noise**
-*   **Action:** Limit agent broadcasts to **Stage Completion Events** and **Defect Notifications**.
-*   **Benefit:** Clearer logs, reduced token usage, and higher signal-to-noise ratio for the developer.
+### **C. Scale the Evolution Loop**
+*   **Action:** The `experiment_engine.py` should be the final gate of every major task. No feature is "Complete" until the Performance agent runs a baseline vs. improvement experiment.
+
+### **D. Visualization: The "War Room" UI**
+*   **Action:** The frontend should visualize the **DAG Execution** and the **L1-L5 Extraction Graphs**. This provides the human user with a high-fidelity "Control Center" view of the Engineering Factory.
 
 ---
 
 ## 5. Conclusion
 
-CodeAudit Dev-Sys is a pure **Technical Pipeline**. By removing managerial abstractions and hard-wiring skills into the development stages, we create a system that is faster, more organized, and focused entirely on the high-quality delivery of code.
+The CodeAudit Integrated Dev-Sys is a pure technical pipeline. It removes managerial abstraction and replaces it with **deep engineering rigor**. By integrating the best-of-breed features from the global open-source agent community, CodeAudit becomes a self-evolving, high-performance engine for software development.
