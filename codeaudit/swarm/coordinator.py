@@ -1,5 +1,5 @@
 """
-Swarm Coordinator - central management for the agent swarm.
+Swarm Coordinator - central management for the agent swarm (Dev-Sys Edition).
 """
 import uuid
 import asyncio
@@ -11,9 +11,9 @@ from .shared_context import SharedContext
 from .round_table import RoundTable
 from .task_engine import TaskEngine, SwarmTask
 from .agents import (
-    OrchestratorAgent, CoderAgent, DebuggerAgent, UIDesignerAgent,
-    DatabaseAgent, BackendAgent, OptimizerAgent, QAReviewerAgent,
-    CriticAgent, SelfModifierAgent
+    ArchitectAgent, UIDesignerAgent, CoderAgent, BackendAgent,
+    DatabaseAgent, QAReviewerAgent, SecurityAgent, DebuggerAgent,
+    OptimizerAgent, SelfModifierAgent
 )
 
 class SwarmConfig(BaseModel):
@@ -37,9 +37,9 @@ class SwarmCoordinator:
 
     def _init_agents(self):
         agent_classes = [
-            OrchestratorAgent, CoderAgent, DebuggerAgent, UIDesignerAgent,
-            DatabaseAgent, BackendAgent, OptimizerAgent, QAReviewerAgent,
-            CriticAgent, SelfModifierAgent
+            ArchitectAgent, UIDesignerAgent, CoderAgent, BackendAgent,
+            DatabaseAgent, QAReviewerAgent, SecurityAgent, DebuggerAgent,
+            OptimizerAgent, SelfModifierAgent
         ]
         for cls in agent_classes:
             agent = cls(self)
@@ -53,7 +53,7 @@ class SwarmCoordinator:
         # Start task engine loop
         self._task_engine_task = asyncio.create_task(self._task_engine.process_queue())
 
-        await self.message_bus.broadcast("SYSTEM", "Swarm Coordinator started", "SYSTEM_EVENT")
+        await self.message_bus.broadcast("SYSTEM", "CodeAudit Dev-Sys Coordinator started", "SYSTEM_EVENT")
 
     async def stop(self):
         if hasattr(self, "_task_engine_task"):
@@ -61,7 +61,7 @@ class SwarmCoordinator:
         self._running = False
         for agent in self._agents.values():
             await agent.stop()
-        await self.message_bus.broadcast("SYSTEM", "Swarm Coordinator stopped", "SYSTEM_EVENT")
+        await self.message_bus.broadcast("SYSTEM", "CodeAudit Dev-Sys Coordinator stopped", "SYSTEM_EVENT")
 
     async def submit_task(self, description: str, task_type: str = "general", requirements: List[str] = None, priority: str = "normal", dependencies: List[str] = None) -> str:
         task = SwarmTask(description, task_type, dependencies)
@@ -78,6 +78,10 @@ class SwarmCoordinator:
         return task.id
 
     async def call_round_table(self, topic: str, question: str, agents: Optional[List[str]] = None) -> Dict[str, Any]:
+        """
+        Management Sync - strictly for cross-departmental conflicts.
+        (Formerly Round Table)
+        """
         if agents is None:
             agents = list(self._agents.keys())
         return await self._round_table.conduct_discussion(topic, question, agents)
@@ -115,8 +119,8 @@ class SwarmCoordinator:
         self._status_listeners.append(callback)
 
     async def list_sessions(self):
-        # Implementation for session listing
-        return []
+        from backend.api import list_sessions
+        return await list_sessions()
 
     async def create_session(self, project_path: str, github_url: Optional[str] = None):
         from backend.api import CreateSessionRequest, create_session
@@ -127,7 +131,3 @@ class SwarmCoordinator:
     async def get_session(self, session_id: str):
         from backend.api import get_session
         return await get_session(session_id)
-
-    async def list_sessions(self):
-        from backend.api import list_sessions
-        return await list_sessions()
